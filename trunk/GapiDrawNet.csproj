@@ -4,7 +4,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E0E9D46A-6963-4880-96CC-DF3654C43AA4}</ProjectGuid>
+    <ProjectGuid>{CD57BF60-AF34-43DD-8B33-58C14782669C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GapiDrawNet</RootNamespace>
@@ -45,39 +45,10 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AnimationSequence.cs" />
-    <Compile Include="AnimationSurface.cs" />
-    <Compile Include="CopyApplication.cs" />
-    <Compile Include="FpmWidget.cs" />
-    <Compile Include="GapiApplication.cs" />
-    <Compile Include="GapiBitmapFont.cs" />
-    <Compile Include="GapiCursor.cs" />
-    <Compile Include="GapiDisplay.cs" />
-    <Compile Include="GapiDraw.cs" />
-    <Compile Include="GapiDrawH.cs" />
-    <Compile Include="GapiForm.cs" />
-    <Compile Include="GapiInput.cs" />
-    <Compile Include="GapiMaskSurface.cs" />
-    <Compile Include="GapiObjectBase.cs" />
-    <Compile Include="GapiRGBASurface.cs" />
-    <Compile Include="GapiStructs.cs" />
-    <Compile Include="GapiSurface.cs" />
-    <Compile Include="GapiTimer.cs" />
-    <Compile Include="GapiUtility.cs" />
-    <Compile Include="GapiWidget.cs" />
-    <Compile Include="GdApplicationH.cs" />
-    <Compile Include="GraphicsUtility.cs" />
-    <Compile Include="ProgressWidget.cs" />
-    <Compile Include="Sprite.cs" />
-    <Compile Include="TextWidget.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
   <ProjectExtensions>
