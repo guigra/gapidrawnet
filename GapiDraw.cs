@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GapiDrawNet
 {
-    static class GapiDraw
+    public static class GapiDraw
     {
         public static readonly IntPtr GlobalHandle;
 
