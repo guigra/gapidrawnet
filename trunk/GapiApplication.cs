@@ -198,7 +198,7 @@ namespace GapiDrawNet
 
 		public void RotateDisplay()
 		{
-			switch(gapiDisplay.Mode)
+			switch(gapiDisplay.DisplayMode)
 			{
 				case DisplayMode.GDDISPMODE_NORMAL: 
 					SetDisplayMode(DisplayMode.GDDISPMODE_ROTATE90CCW);
@@ -224,7 +224,7 @@ namespace GapiDrawNet
 
 			if(gapiDisplay != null)
 			{
-				gapiDisplay.SetDisplayMode(mode);
+                gapiDisplay.DisplayMode = mode;
 				backBuffer = gapiDisplay.BackBuffer;
 
 				UpdateKeys();

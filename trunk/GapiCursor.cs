@@ -8,28 +8,15 @@ namespace GapiDrawNet
 	/// </summary>
 	public class GapiCursor : GapiSurface
 	{
-//		[DllImport("GdNet.dll")]
-//		private static extern IntPtr CGapiCursor_Create();
-//		// private static extern int CGdApplication_Create(ref IntPtr pApp, IntPtr hInst);
-//
-//		[DllImport("GdNet.dll")]
-//		private static extern int  CGapiCursor_Destroy(IntPtr pApp);
-
-//		protected IntPtr unmanagedGapiObject;
-//		public IntPtr GapiObject
-//		{
-//			get { return unmanagedGapiObject; }
-//		}
-
 		public GapiCursor()
+            : base(GdNet.CGapiCursor_Create(), true)
 		{
-			unmanagedGapiObject = GdNet.CGapiCursor_Create();
 		}
 
-		override public void Dispose()
-		{
-			GdNet.CGapiCursor_Destroy(unmanagedGapiObject);
-		}
+        protected override void DestroyGapiObject(IntPtr gapiObject)
+        {
+            CheckResult(GdNet.CGapiCursor_Destroy(Handle));
+        }
 
 
 //		Create a CGapiCursor object. 
@@ -43,7 +30,7 @@ namespace GapiDrawNet
 //		public static extern UInt32 CGapiCursor_CreateCursor(IntPtr pCursor, int dwFlags, int dwFrameCount, int dwFrameStep);
 		public UInt32 CreateCursor(int FrameCount, int dwFrameStep)
 		{
-			UInt32 hResult = GdNet.CGapiCursor_CreateCursor(unmanagedGapiObject, 0, FrameCount, dwFrameStep);
+			UInt32 hResult = GdNet.CGapiCursor_CreateCursor(Handle, 0, FrameCount, dwFrameStep);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 
@@ -54,7 +41,7 @@ namespace GapiDrawNet
 //		public static extern UInt32 CGapiCursor_SetHotSpot(IntPtr pCursor, int dwX, int dwY);
 		public UInt32 SetHotSpot(int dwX, int dwY)
 		{
-			UInt32 hResult = GdNet.CGapiCursor_SetHotSpot(unmanagedGapiObject, dwX, dwY);
+			UInt32 hResult = GdNet.CGapiCursor_SetHotSpot(Handle, dwX, dwY);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 
@@ -65,7 +52,7 @@ namespace GapiDrawNet
 //		public static extern UInt32 CGapiCursor_SetFrameIndex(IntPtr pCursor, int dwFrameIndex);
 		public UInt32 SetFrameIndex(int dwFrameIndex)
 		{
-			UInt32 hResult = GdNet.CGapiCursor_SetFrameIndex(unmanagedGapiObject, dwFrameIndex);
+			UInt32 hResult = GdNet.CGapiCursor_SetFrameIndex(Handle, dwFrameIndex);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 
@@ -76,7 +63,7 @@ namespace GapiDrawNet
 //		public static extern UInt32 CGapiCursor_SetPosition(IntPtr pCursor, int dwX, int dwY);
 		public UInt32 SetPosition(int dwX, int dwY)
 		{
-			UInt32 hResult = GdNet.CGapiCursor_SetPosition(unmanagedGapiObject, dwX, dwY);
+			UInt32 hResult = GdNet.CGapiCursor_SetPosition(Handle, dwX, dwY);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 
@@ -87,7 +74,7 @@ namespace GapiDrawNet
 //		public static extern UInt32 CGapiCursor_DrawCursor(IntPtr pCursor, IntPtr pDestSurface);
 		public UInt32 DrawCursor(GapiSurface destSurface)
 		{
-			UInt32 hResult = GdNet.CGapiCursor_DrawCursor(unmanagedGapiObject, destSurface.GapiObject);
+			UInt32 hResult = GdNet.CGapiCursor_DrawCursor(Handle, destSurface.Handle);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 

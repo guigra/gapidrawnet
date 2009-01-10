@@ -1,8 +1,20 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug-Leaks|AnyCPU' ">
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug-Leaks\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;PocketPC LEAKS</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E0E9D46A-6963-4880-96CC-DF3654C43AA4}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -44,6 +56,7 @@
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -65,7 +78,7 @@
     <Compile Include="GapiForm.cs" />
     <Compile Include="GapiInput.cs" />
     <Compile Include="GapiMaskSurface.cs" />
-    <Compile Include="GapiObjectBase.cs" />
+    <Compile Include="GapiObjectRef.cs" />
     <Compile Include="GapiRGBASurface.cs" />
     <Compile Include="GapiStructs.cs" />
     <Compile Include="GapiSurface.cs" />
