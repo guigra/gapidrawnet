@@ -12,14 +12,14 @@ namespace GapiDrawNet
 	public class GapiSurface : GapiObjectRef
 	{
         public GapiSurface()
-            : base(GdNet.CGapiSurface_Create(GapiDraw.GlobalHandle)) { }
+            : base(GdApi.CGapiSurface_Create(GapiDraw.GlobalHandle)) { }
 
         public GapiSurface(IntPtr gapiObject, bool ownsHandle)
             : base(gapiObject, ownsHandle) { }
 
         protected override void DestroyGapiObject(IntPtr gapiObject)
         {
-            CheckResult(GdNet.CGapiSurface_Destroy(Handle));
+            CheckResult(GdApi.CGapiSurface_Destroy(Handle));
         }
 
         #region CreateSurface
@@ -27,9 +27,9 @@ namespace GapiDrawNet
         public UInt32 CreateSurface(string fileName)
 		{
 			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdNet.CGapiSurface_CreateSurfaceFromFile(Handle, 0, fileName);
+			UInt32 hResult = GdApi.CGapiSurface_CreateSurfaceFromFile(Handle, 0, fileName);
 
-			GapiUtility.RaiseExceptionOnError(hResult, fileName);
+			GapiErrorHelper.RaiseExceptionOnError(hResult, fileName);
 
 			return hResult;
 		}
@@ -37,9 +37,9 @@ namespace GapiDrawNet
 		public UInt32 CreateSurface(CreateSurfaceOptions dwFlags, string fileName)
 		{
 			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdNet.CGapiSurface_CreateSurfaceFromFile(Handle, (int)dwFlags, fileName);
+			UInt32 hResult = GdApi.CGapiSurface_CreateSurfaceFromFile(Handle, (int)dwFlags, fileName);
 
-			GapiUtility.RaiseExceptionOnError(hResult, fileName);
+			GapiErrorHelper.RaiseExceptionOnError(hResult, fileName);
 
 			return hResult;
 		}
@@ -47,18 +47,18 @@ namespace GapiDrawNet
 		public UInt32 CreateSurface(GapiSurface srcSurface)
 		{
 			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdNet.CGapiSurface_CreateSurfaceFromSurface(Handle, srcSurface.Handle);
+			UInt32 hResult = GdApi.CGapiSurface_CreateSurfaceFromSurface(Handle, srcSurface.Handle);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}
 
 		public UInt32 CreateSurface(byte[] imageBytes, CreateSurfaceOptions dwFlags)
 		{
-			UInt32 hResult = GdNet.CGapiSurface_CreateSurfaceFromMem (Handle, (int)dwFlags, imageBytes, imageBytes.Length);
+			UInt32 hResult = GdApi.CGapiSurface_CreateSurfaceFromMem (Handle, (int)dwFlags, imageBytes, imageBytes.Length);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}
@@ -67,9 +67,9 @@ namespace GapiDrawNet
 
 		public UInt32 CreateSurface(IntPtr hInstance, CreateSurfaceOptions dwFlags, int dwResourceID, string pResourceType)
 		{
-			UInt32 hResult = GdNet.CGapiSurface_CreateSurfaceFromRes(Handle, (int)dwFlags, hInstance, dwResourceID, pResourceType);
+			UInt32 hResult = GdApi.CGapiSurface_CreateSurfaceFromRes(Handle, (int)dwFlags, hInstance, dwResourceID, pResourceType);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}
@@ -78,17 +78,17 @@ namespace GapiDrawNet
 		public void CreateSurface(CreateSurfaceOptions dwFlags, int dwWidth, int dwHeight)
 		{
             // public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdNet.CGapiSurface_CreateSurface(Handle, (int)dwFlags, dwWidth, dwHeight);
+			UInt32 hResult = GdApi.CGapiSurface_CreateSurface(Handle, (int)dwFlags, dwWidth, dwHeight);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 		}
 
 		public void CreateSurface(int dwWidth, int dwHeight)
 		{
             // public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdNet.CGapiSurface_CreateSurface(Handle, 0, dwWidth, dwHeight);
+			UInt32 hResult = GdApi.CGapiSurface_CreateSurface(Handle, 0, dwWidth, dwHeight);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
         }
 
         #endregion
@@ -97,12 +97,12 @@ namespace GapiDrawNet
 
         public int Width
 		{
-            get { return GdNet.CGapiSurface_GetWidth(Handle); }
+            get { return GdApi.CGapiSurface_GetWidth(Handle); }
 		}
 
 		public int Height
 		{
-            get { return GdNet.CGapiSurface_GetHeight(Handle); }
+            get { return GdApi.CGapiSurface_GetHeight(Handle); }
 		}
 
         /// <summary>
@@ -127,14 +127,14 @@ namespace GapiDrawNet
 		public int GetColorKey()
 		{
 			int result;
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_GetColorKey(Handle, out result));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_GetColorKey(Handle, out result));
 			return result;
 		}
 		
 		//		public UInt32 SetColorKey (IntPtr pSurface, int dwColorKey);
 		public void SetColorKey(int dwColorKey)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_SetColorKey(Handle, dwColorKey));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SetColorKey(Handle, dwColorKey));
 		}
 
 		public int ColorKey
@@ -166,7 +166,7 @@ namespace GapiDrawNet
 		public IntPtr GetDC()
 		{
 			IntPtr result;
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_GetDC(Handle, out result));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_GetDC(Handle, out result));
 			return result;
 		}
 
@@ -174,14 +174,14 @@ namespace GapiDrawNet
 //		public UInt32 CGapiSurface_ReleaseDC(IntPtr pSurface, IntPtr hDC);
 		public void ReleaseDC(IntPtr hDC)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_ReleaseDC(Handle, hDC));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_ReleaseDC(Handle, hDC));
 		}
 		
 //		public UInt32 CGapiSurface_GetBuffer (IntPtr pSurface, ref GDBUFFERDESC pGDBufferDesc);
 		public GDBUFFERDESC GetBuffer()
 		{
 			GDBUFFERDESC pGDBufferDesc;
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_GetBuffer(Handle, out pGDBufferDesc));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_GetBuffer(Handle, out pGDBufferDesc));
 			return pGDBufferDesc;
 		}
 
@@ -189,37 +189,37 @@ namespace GapiDrawNet
 //		public UInt32 CGapiSurface_ReleaseBuffer (IntPtr pSurface);
 		public void ReleaseBuffer()
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_ReleaseBuffer(Handle));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_ReleaseBuffer(Handle));
 		}
 	
 		// TODO : TEST THESE
 		public UInt32 LockVideoSurface()
 		{
-			return GdNet.CGapiSurface_LockVideoSurface(Handle);
+			return GdApi.CGapiSurface_LockVideoSurface(Handle);
 		}
 
 		// TODO : TEST THESE
 		public UInt32 UnlockVideoSurface()
 		{
-			return GdNet.CGapiSurface_UnlockVideoSurface(Handle);
+			return GdApi.CGapiSurface_UnlockVideoSurface(Handle);
 		}
 
 //		public UInt32 CGapiSurface_SaveSurface (IntPtr pSurface, ref char pBitmapFile);
 		public void SaveSurface(string bitmapFilename, SaveSurfaceOptions options)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_SaveSurface(Handle, bitmapFilename, (int)options));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SaveSurface(Handle, bitmapFilename, (int)options));
 		}
 
 		public void SaveSurface(string bitmapFilename)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_SaveSurface(Handle, bitmapFilename, (int)SaveSurfaceOptions.GDSAVESURFACE_BMP), bitmapFilename);
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SaveSurface(Handle, bitmapFilename, (int)SaveSurfaceOptions.GDSAVESURFACE_BMP), bitmapFilename);
 		}
 		
 //		public UInt32 CGapiSurface_GetSurfaceOptions (IntPtr pSurface, ref int pOptions);
 		public CreateSurfaceOptions GetSurfaceFlags()
 		{
 			int result;
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_GetSurfaceFlags(Handle, out result));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_GetSurfaceFlags(Handle, out result));
 			return (CreateSurfaceOptions)result;
 		}
 		
@@ -250,7 +250,7 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void SetClipper()
         {
-            CheckResult(GdNet.CGapiSurface_SetClipper(
+            CheckResult(GdApi.CGapiSurface_SetClipper(
                 Handle, null));
         }
 
@@ -259,7 +259,7 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void SetClipper(GDRect clipRect)
         {
-            CheckResult(GdNet.CGapiSurface_SetClipper(
+            CheckResult(GdApi.CGapiSurface_SetClipper(
                 Handle, &clipRect));
         }
 
@@ -272,7 +272,7 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void Blt(GapiSurface surface)
         {
-            CheckResult(GdNet.CGapiSurface_Blt(
+            CheckResult(GdApi.CGapiSurface_Blt(
                 Handle, null, surface.Handle, null, 0, null));
         }
 
@@ -281,7 +281,7 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void Blt(GDRect destRect, GapiSurface surface)
         {
-            CheckResult(GdNet.CGapiSurface_Blt(
+            CheckResult(GdApi.CGapiSurface_Blt(
                 Handle, &destRect, surface.Handle, null, 0, null));
         }
 
@@ -290,7 +290,7 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void Blt(GDRect destRect, GapiSurface surface, GDRect surfaceRect)
         {
-            CheckResult(GdNet.CGapiSurface_Blt(
+            CheckResult(GdApi.CGapiSurface_Blt(
                 Handle, &destRect, surface.Handle, &surfaceRect, 0, null));
         }
 
@@ -302,7 +302,7 @@ namespace GapiDrawNet
             BltOptions options, ref GDBLTFX fx)
         {
             fixed (GDBLTFX* pFX = &fx)
-                CheckResult(GdNet.CGapiSurface_Blt(
+                CheckResult(GdApi.CGapiSurface_Blt(
                     Handle, &destRect, surface.Handle, &surfaceRect, options, pFX));
         }
 
@@ -315,7 +315,7 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void BltFast(int x, int y, GapiSurface surface)
         {
-            CheckResult(GdNet.CGapiSurface_BltFast(
+            CheckResult(GdApi.CGapiSurface_BltFast(
                 Handle, x, y, surface.Handle, null, 0, null));
         }
 
@@ -324,7 +324,7 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void BltFast(int x, int y, GapiSurface surface, GDRect surfaceRect)
         {
-            CheckResult(GdNet.CGapiSurface_BltFast(
+            CheckResult(GdApi.CGapiSurface_BltFast(
                 Handle, x, y, surface.Handle, &surfaceRect, 0, null));
         }
 
@@ -336,7 +336,7 @@ namespace GapiDrawNet
             BltFastOptions options, ref GDBLTFASTFX fx)
         {
             fixed (GDBLTFASTFX* pFX = &fx)
-                CheckResult(GdNet.CGapiSurface_BltFast(
+                CheckResult(GdApi.CGapiSurface_BltFast(
                     Handle, x, y, surface.Handle, &surfaceRect, options, pFX));
         }
 
@@ -349,7 +349,7 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void AlphaBltFast(int x, int y, GapiSurface surface, GapiSurface alphaSurface)
         {
-            CheckResult(GdNet.CGapiSurface_AlphaBltFast(
+            CheckResult(GdApi.CGapiSurface_AlphaBltFast(
                 Handle, x, y, surface.Handle, null,
                 alphaSurface.Handle, null, 0, null));
         }
@@ -360,7 +360,7 @@ namespace GapiDrawNet
         public unsafe void AlphaBltFast(int x, int y, GapiSurface surface, GDRect surfaceRect,
             GapiSurface alphaSurface, GDRect alphaRect)
         {
-            CheckResult(GdNet.CGapiSurface_AlphaBltFast(
+            CheckResult(GdApi.CGapiSurface_AlphaBltFast(
                 Handle, x, y, surface.Handle, &surfaceRect,
                 alphaSurface.Handle, &alphaRect, 0, null));
         }
@@ -375,7 +375,7 @@ namespace GapiDrawNet
             GDALPHABLTFASTFX fx;
             fx.dwOpacity = opacity;
 
-            CheckResult(GdNet.CGapiSurface_AlphaBltFast(
+            CheckResult(GdApi.CGapiSurface_AlphaBltFast(
                 Handle, x, y, surface.Handle, &surfaceRect,
                 alphaSurface.Handle, &alphaRect,
                 AlphaBltFastOptions.GDALPHABLTFAST_OPACITY, &fx));
@@ -386,7 +386,7 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void AlphaBltFast(int x, int y, GapiRGBASurface surface)
         {
-            CheckResult(GdNet.CGapiSurface_AlphaBltFastRgba(
+            CheckResult(GdApi.CGapiSurface_AlphaBltFastRgba(
                 Handle, x, y, surface.GapiObject, null, 0, null));
         }
 
@@ -395,7 +395,7 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void AlphaBltFast(int x, int y, GapiRGBASurface surface, GDRect surfaceRect)
         {
-            CheckResult(GdNet.CGapiSurface_AlphaBltFastRgba(
+            CheckResult(GdApi.CGapiSurface_AlphaBltFastRgba(
                 Handle, x, y, surface.GapiObject, &surfaceRect, 0, null));
         }
 
@@ -410,7 +410,7 @@ namespace GapiDrawNet
             GDALPHABLTFASTFX fx;
             fx.dwOpacity = opacity;
 
-            CheckResult(GdNet.CGapiSurface_AlphaBltFastRgba(
+            CheckResult(GdApi.CGapiSurface_AlphaBltFastRgba(
                 Handle, x, y, surface.GapiObject, &surfaceRect,
                 AlphaBltFastOptions.GDALPHABLTFAST_OPACITY, &fx));
         }
@@ -422,39 +422,33 @@ namespace GapiDrawNet
         /// <summary>
         /// Draws a line on the surface without antialiasing.
         /// </summary>
-        public unsafe void DrawLine(int x1, int y1, int x2, int y2, int color)
+        public unsafe void DrawLine(int x1, int y1, int x2, int y2, Color color)
         {
-            CheckResult(GdNet.CGapiSurface_DrawLine(
-                Handle, x1, y1, x2, y2, color, 0, null));
-        }
-
-        /// <summary>
-        /// Draws a line on the surface with optional antialiasing.
-        /// </summary>
-        public unsafe void DrawLine(int x1, int y1, int x2, int y2, int color, bool antiAlias)
-        {
-            DrawLineOptions options = antiAlias ? DrawLineOptions.GDDRAWLINE_ANTIALIAS : 0;
-
-            CheckResult(GdNet.CGapiSurface_DrawLine(
-                Handle, x1, y1, x2, y2, color, options, null));
+            DrawLine(x1, y2, x2, y2, color, false);
         }
 
         /// <summary>
         /// Draws a line on the surface.
         /// </summary>
         /// <param name="opacity">Uses the opacity value in pGDABltFastFx->dwOpacity to adjust the overall weight of the alpha blend. Allowed range is from 0 (transparent) to 255 (opaque). If the opacity is set to 128, an optimized blending mode will be used.</param>
-        public unsafe void DrawLine(int x1, int y1, int x2, int y2, int color, bool antiAlias, int opacity)
+        public unsafe void DrawLine(int x1, int y1, int x2, int y2, Color color, bool antiAlias)
         {
+            GDLINEFX* pFX = null;
+            DrawLineOptions options = 0;
             GDLINEFX fx;
-            fx.dwOpacity = opacity;
 
-            var options = DrawLineOptions.GDDRAWLINE_OPACITY;
-
+            if (color.A < 255)
+            {
+                options |= DrawLineOptions.GDDRAWLINE_OPACITY;
+                fx.dwOpacity = color.A;
+                pFX = &fx;
+            }
+            
             if (antiAlias)
                 options |= DrawLineOptions.GDDRAWLINE_ANTIALIAS;
 
-            CheckResult(GdNet.CGapiSurface_DrawLine(
-                Handle, x1, y1, x2, y2, color, options, &fx));
+            CheckResult(GdApi.CGapiSurface_DrawLine(
+                Handle, x1, y1, x2, y2, color.ToColorRef(), options, pFX));
         }
 
         #endregion
@@ -462,45 +456,37 @@ namespace GapiDrawNet
         #region FillRect
 
         /// <summary>
-        /// Fills the entire area of this surface with the given color.
+        /// Fills the entire area of this surface with the given color (which can contain opacity).
         /// </summary>
-        public unsafe void FillRect(int color)
+        public unsafe void FillRect(Color color)
         {
-            CheckResult(GdNet.CGapiSurface_FillRect(
-                Handle, null, color, 0, null));
-        }
-
-        /// <summary>
-        /// Fills the specified area of this surface with the given color.
-        /// </summary>
-        public unsafe void FillRect(GDRect rect, int color)
-        {
-            CheckResult(GdNet.CGapiSurface_FillRect(
-                Handle, &rect, color, 0, null));
-        }
-
-        /// <summary>
-        /// Fills the entire area of this surface with the given color at the given opacity.
-        /// </summary>
-        public unsafe void FillRect(int color, int opacity)
-        {
-            GDFILLRECTFX fx;
-            fx.dwOpacity = opacity;
-
-            CheckResult(GdNet.CGapiSurface_FillRect(
-                Handle, null, color, FillRectOptions.GDFILLRECT_OPACITY, &fx));
+            if (color.A < 255)
+            {
+                GDFILLRECTFX fx;
+                fx.dwOpacity = color.A;
+                CheckResult(GdApi.CGapiSurface_FillRect(
+                    Handle, null, color.ToColorRef(), FillRectOptions.GDFILLRECT_OPACITY, &fx));
+            }
+            else CheckResult(GdApi.CGapiSurface_FillRect(
+                    Handle, null, color.ToColorRef(), 0, null));
         }
         
         /// <summary>
         /// Fills the specified area of this surface with the given color at the given opacity.
         /// </summary>
-        public unsafe void FillRect(GDRect rect, int color, int opacity)
+        public unsafe void FillRect(Rectangle rect, Color color)
         {
-            GDFILLRECTFX fx;
-            fx.dwOpacity = opacity;
+            GDRect gdRect = rect;
 
-            CheckResult(GdNet.CGapiSurface_FillRect(
-                Handle, &rect, color, FillRectOptions.GDFILLRECT_OPACITY, &fx));
+            if (color.A < 255)
+            {
+                GDFILLRECTFX fx;
+                fx.dwOpacity = color.A;
+                CheckResult(GdApi.CGapiSurface_FillRect(
+                    Handle, &gdRect, color.ToColorRef(), FillRectOptions.GDFILLRECT_OPACITY, &fx));
+            }
+            else CheckResult(GdApi.CGapiSurface_FillRect(
+                    Handle, &gdRect, color.ToColorRef(), 0, null));
         }
 
         #endregion
@@ -508,7 +494,7 @@ namespace GapiDrawNet
         //		public UInt32 CGapiSurface_AlphaBlt (IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref GDALPHABLTFX pGDAlphaBltFx);
 		public void AlphaBlt(ref GDRect pDestRect, GapiSurface srcSurface, ref GDRect pSrcRect, GapiSurface alphaSurface, ref GDRect alphaRect, AlphaBltOptions dwFlags, ref GDALPHABLTFX pGDAlphaBltFx)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_AlphaBlt(Handle, ref pDestRect, srcSurface.Handle, ref pSrcRect, alphaSurface.Handle, ref alphaRect, (int)dwFlags, ref pGDAlphaBltFx));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_AlphaBlt(Handle, ref pDestRect, srcSurface.Handle, ref pSrcRect, alphaSurface.Handle, ref alphaRect, (int)dwFlags, ref pGDAlphaBltFx));
 		}
 		
 		public void AlphaBlt(ref GDRect pDestRect, GapiSurface srcSurface, GapiSurface alphaSurface, ref GDRect alphaRect)
@@ -516,7 +502,7 @@ namespace GapiDrawNet
 			unsafe
 			{
 				fixed (GDRect* pAlphaRect = &alphaRect)
-					GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_AlphaBltNoRect(Handle, ref pDestRect, srcSurface.Handle, null, alphaSurface.Handle, ref alphaRect, 0, null));
+					GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_AlphaBltNoRect(Handle, ref pDestRect, srcSurface.Handle, null, alphaSurface.Handle, ref alphaRect, 0, null));
 			}
 		}
 		public void AlphaBlt(ref GDRect pDestRect, GapiSurface srcSurface, ref GDRect srcRect, GapiSurface alphaSurface, ref GDRect alphaRect)
@@ -525,7 +511,7 @@ namespace GapiDrawNet
 			{
 				fixed (GDRect* pSrcRect = &srcRect)
 					fixed (GDRect* pAlphaRect = &alphaRect)
-						GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_AlphaBltNoRect(Handle, ref pDestRect, srcSurface.Handle, pSrcRect, alphaSurface.Handle, ref alphaRect, 0, null));
+						GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_AlphaBltNoRect(Handle, ref pDestRect, srcSurface.Handle, pSrcRect, alphaSurface.Handle, ref alphaRect, 0, null));
 			}
 		}
 
@@ -533,50 +519,50 @@ namespace GapiDrawNet
 		public int GetPixel(int dwX, int dwY)
 		{
 			int result;
-			GdNet.CGapiSurface_GetPixel(Handle, dwX, dwY, out result);
+			GdApi.CGapiSurface_GetPixel(Handle, dwX, dwY, out result);
 			return result;
 		}
 		
 //		public UInt32 CGapiSurface_SetPixel (IntPtr pSurface, int dwX, int dwY, int dwColor);
 		public UInt32 SetPixel(int dwX, int dwY, int dwColor)
 		{
-			return GdNet.CGapiSurface_SetPixel(Handle, dwX, dwY, dwColor);
+			return GdApi.CGapiSurface_SetPixel(Handle, dwX, dwY, dwColor);
 		}
 
 		
 //		public UInt32 CGapiSurface_SetPixelsArray(IntPtr pSurface, ref GDPIXEL pFirst, int dwElementSize, int dwElementCount, int dwFlags);
 		public void SetPixels(GDPIXEL[] pFirst, int dwElementSize, SetPixelsOptions dwFlags)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_SetPixelsArray(Handle, ref pFirst[0], dwElementSize, pFirst.Length, (int)dwFlags));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SetPixelsArray(Handle, ref pFirst[0], dwElementSize, pFirst.Length, (int)dwFlags));
 		}
 
 		public void SetPixels(GDPIXEL[] pFirst, int dwElementSize)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_SetPixelsArray(Handle, ref pFirst[0], dwElementSize, pFirst.Length, 0));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SetPixelsArray(Handle, ref pFirst[0], dwElementSize, pFirst.Length, 0));
 		}
 
 //		public UInt32 CGapiSurface_SetPixelsList(IntPtr pSurface, ref GDPIXELNODE pHead, int dwFlags);
 		public void SetPixels(ref GDPIXELNODE pHead, int dwFlags)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_SetPixelsList(Handle, ref pHead, dwFlags));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SetPixelsList(Handle, ref pHead, dwFlags));
 		}
 
 		public void SetPixelsArray(GDPIXEL[] pFirst, int dwElementSize)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_SetPixelsArray(Handle, ref pFirst[0], dwElementSize, pFirst.Length, 0));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SetPixelsArray(Handle, ref pFirst[0], dwElementSize, pFirst.Length, 0));
 		}
 
 //		public UInt32 CGapiSurface_DrawRect(IntPtr pSurface, ref GDRect pRect, int dwColor, int dwFlags, ref GDLINEFX pGDLineFx);
 		public void DrawRect(ref GDRect pRect, int dwColor, DrawLineOptions dwFlags, ref GDLINEFX pGDLineFx)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_DrawRect(Handle, ref pRect, dwColor, (int)dwFlags, ref pGDLineFx));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_DrawRect(Handle, ref pRect, dwColor, (int)dwFlags, ref pGDLineFx));
 		}
 		
 		public void DrawRect(ref GDRect pRect, int dwColor)
 		{
 			unsafe
 			{
-				GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_DrawRectNoOptions(Handle, ref pRect, dwColor, 0, null));
+				GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_DrawRectNoOptions(Handle, ref pRect, dwColor, 0, null));
 			}
 		}
 
@@ -585,7 +571,7 @@ namespace GapiDrawNet
 		{
 			int result;
 
-			GdNet.CGapiBitmapFont_GetStringWidth (font.Handle, drawString, out result);
+			GdApi.CGapiBitmapFont_GetStringWidth (font.Handle, drawString, out result);
 			/// TODO : fix GetTextWidth
 			// GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_DrawTextBitmapFont(unmanagedGapiObject, 0, 0, drawString, font.GapiObject, (int)DrawTextOptions.GDDRAWTEXT_CALCWIDTH, 0, IntPtr.Zero, out result));
 			return result;
@@ -593,7 +579,7 @@ namespace GapiDrawNet
 		
 		public void GetClipper(ref GDRect clipRect)
 		{
-			GdNet.CGapiSurface_GetClipper(Handle, ref clipRect);
+			GdApi.CGapiSurface_GetClipper(Handle, ref clipRect);
 		}
 
 //		public void DrawText(int dwX, int dwY, string drawString, GapiBitmapFont font, DrawTextOptions dwFlags, GDTEXTFX gDTextFx)
@@ -610,7 +596,7 @@ namespace GapiDrawNet
 		{
 			int result;
 			/// TODO : Overload with missing paramters
-			result = (int)GdNet.CGapiSurface_DrawText(Handle, dwX, dwY, drawString, pFont, (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);
+			result = (int)GdApi.CGapiSurface_DrawText(Handle, dwX, dwY, drawString, pFont, (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);
 			return result;
 		}
 
@@ -618,20 +604,20 @@ namespace GapiDrawNet
 		{
 			int result;
 			/// TODO : Overload with missing paramters
-			result = (int)GdNet.CGapiSurface_DrawText(Handle, dwX, dwY, drawString, font.Handle, (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);
+			result = (int)GdApi.CGapiSurface_DrawText(Handle, dwX, dwY, drawString, font.Handle, (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);
 			return result;
 		}
 		
 //		public UInt32 Intersect(int dwX1, int dwY1, IntPtr pSrcSurface1, ref GDRect pSrcRect1, int dwX2, int dwY2, IntPtr pSrcSurface2, ref GDRect pSrcRect2, ref System.Drawing.Point pIntersection);
 		public static void Intersect(int dwX1, int dwY1, GapiSurface srcSurface1, ref GDRect pSrcRect1, int dwX2, int dwY2, GapiSurface srcSurface2, ref GDRect pSrcRect2, ref System.Drawing.Point pIntersection)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_Intersect(dwX1, dwY1, srcSurface1.Handle, ref pSrcRect1, dwX2, dwY2, srcSurface2.Handle, ref pSrcRect2, ref pIntersection));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_Intersect(dwX1, dwY1, srcSurface1.Handle, ref pSrcRect1, dwX2, dwY2, srcSurface2.Handle, ref pSrcRect2, ref pIntersection));
 		}
 		
 		public static System.Drawing.Point Intersect(int dwX1, int dwY1, GapiSurface srcSurface1, ref GDRect pSrcRect1, int dwX2, int dwY2, GapiSurface srcSurface2, ref GDRect pSrcRect2)
 		{
 			System.Drawing.Point point = new System.Drawing.Point(-1, -1);
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_Intersect(dwX1, dwY1, srcSurface1.Handle, ref pSrcRect1, dwX2, dwY2, srcSurface2.Handle, ref pSrcRect2, ref point));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_Intersect(dwX1, dwY1, srcSurface1.Handle, ref pSrcRect1, dwX2, dwY2, srcSurface2.Handle, ref pSrcRect2, ref point));
 			return point;
 		}
 
@@ -642,7 +628,7 @@ namespace GapiDrawNet
 				System.Drawing.Point point = new System.Drawing.Point(-1, -1);
 				
 				fixed (GDRect* pSrcRect = &pSrcRect1)
-					GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_IntersectNoRect(dwX1, dwY1, srcSurface1.Handle, pSrcRect, dwX2, dwY2, srcSurface2.Handle, null, ref point));
+					GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_IntersectNoRect(dwX1, dwY1, srcSurface1.Handle, pSrcRect, dwX2, dwY2, srcSurface2.Handle, null, ref point));
 				return point;
 			}
 		}
@@ -654,7 +640,7 @@ namespace GapiDrawNet
 				System.Drawing.Point point = new System.Drawing.Point(-1, -1);
 				
 				fixed (GDRect* pSrcRect = &pSrcRect2)
-					GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_IntersectNoRect(dwX1, dwY1, srcSurface1.Handle, null, dwX2, dwY2, srcSurface2.Handle, pSrcRect, ref point));
+					GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_IntersectNoRect(dwX1, dwY1, srcSurface1.Handle, null, dwX2, dwY2, srcSurface2.Handle, pSrcRect, ref point));
 			
 				return point;
 			}
@@ -666,7 +652,7 @@ namespace GapiDrawNet
 			System.Drawing.Point point = new System.Drawing.Point(-1, -1);
 			unsafe
 			{
-				GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_IntersectNoRect(dwX1, dwY1, srcSurface1.Handle, null, dwX2, dwY2, srcSurface2.Handle, null, ref point));
+				GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_IntersectNoRect(dwX1, dwY1, srcSurface1.Handle, null, dwX2, dwY2, srcSurface2.Handle, null, ref point));
 			}
 			return point;
 		}
@@ -676,7 +662,7 @@ namespace GapiDrawNet
 		public int ColorrefToNative(int dwColor)
 		{
 			int pNative;
-			GdNet.CGapiSurface_ColorrefToNative(Handle, dwColor, out pNative);
+			GdApi.CGapiSurface_ColorrefToNative(Handle, dwColor, out pNative);
 			return pNative;
 		}
 		
@@ -685,7 +671,7 @@ namespace GapiDrawNet
 		public int NativeToColorref(int dwNative)
 		{
 			int pColor;
-			GdNet.CGapiSurface_NativeToColorref(Handle, dwNative, out pColor);
+			GdApi.CGapiSurface_NativeToColorref(Handle, dwNative, out pColor);
 			return pColor;
 		}
     }

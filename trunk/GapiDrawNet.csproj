@@ -61,35 +61,25 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnimationSequence.cs" />
-    <Compile Include="AnimationSurface.cs" />
-    <Compile Include="CopyApplication.cs" />
-    <Compile Include="FpmWidget.cs" />
-    <Compile Include="GapiApplication.cs" />
     <Compile Include="GapiBitmapFont.cs" />
     <Compile Include="GapiCursor.cs" />
     <Compile Include="GapiDisplay.cs" />
     <Compile Include="GapiDraw.cs" />
-    <Compile Include="GapiDrawH.cs" />
-    <Compile Include="GapiForm.cs" />
+    <Compile Include="GdEnums.cs" />
     <Compile Include="GapiInput.cs" />
     <Compile Include="GapiMaskSurface.cs" />
     <Compile Include="GapiObjectRef.cs" />
     <Compile Include="GapiRGBASurface.cs" />
-    <Compile Include="GapiStructs.cs" />
+    <Compile Include="GdStructs.cs" />
     <Compile Include="GapiSurface.cs" />
     <Compile Include="GapiTimer.cs" />
-    <Compile Include="GapiUtility.cs" />
-    <Compile Include="GapiWidget.cs" />
-    <Compile Include="GdApplicationH.cs" />
-    <Compile Include="GraphicsUtility.cs" />
-    <Compile Include="ProgressWidget.cs" />
-    <Compile Include="Sprite.cs" />
-    <Compile Include="TextWidget.cs" />
+    <Compile Include="GapiErrorHelper.cs" />
+    <Compile Include="GdApi.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
   <ProjectExtensions>

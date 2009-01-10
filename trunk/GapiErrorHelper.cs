@@ -6,63 +6,10 @@ using System.Drawing;
 namespace GapiDrawNet
 {
 	/// <summary>
-	/// Summary description for GapiUtility.
+	/// Provides checking of GapiDraw return values.
 	/// </summary>
-	public class GapiUtility
+	class GapiErrorHelper
 	{
-		public GapiUtility()
-		{
-			//
-			// TODO: Add constructor logic here
-			//
-		}
-
-#if (PocketPC)
-		[DllImport("coredll.dll")] 
-		internal static extern IntPtr GetModuleHandle(String lpModuleName); 
-
-		public static IntPtr GetHInstance()
-		{
-			return GetModuleHandle(null); ;
-		}
-#else
-      public static IntPtr GetHInstance()
-		{
-			return System.Runtime.InteropServices.Marshal.GetHINSTANCE(typeof(GapiApplication).Module);
-		}
-#endif
-
-		public static int RGB(int red, int green, int blue)
-		{
-			return red + (green << 8) + (blue << 16);
-		}
-
-        public static int RGB(Color color)
-        {
-            return Color.FromArgb(color.B, color.G, color.R).ToArgb();
-        }
-
-		public static void ReduceBound(bool shouldReduce, ref int sourceBound, ref int sourceBoundMirror, bool useMirror, ref int destBound2, int reduction)
-		{
-			if(shouldReduce == false){ return; }
-			
-			if(useMirror)
-			{
-				sourceBoundMirror +=reduction;
-			}
-			else
-			{
-				sourceBound -= reduction;
-			}
-			destBound2 -= reduction;
-		}
-
-		public static bool IsLeftButton(System.Windows.Forms.MouseButtons button)
-		{
-			// on my pocket pc, left button == 1, not MouseButtons.Left
-			return ((int)button == 1) || (button == System.Windows.Forms.MouseButtons.Left);
-		}
-
 		public static void RaiseExceptionOnError(UInt32 hResult)
 		{
 			if(hResult ==  (UInt32)GapiResults.GD_OK){ return;}
@@ -71,6 +18,7 @@ namespace GapiDrawNet
 			
 			throw new Exception("Error " + hResult.ToString("X") + ": " + ErrorMessage);
 		}
+
 		public static void RaiseExceptionOnError(UInt32 hResult, string additionalInfo)
 		{
 			if(hResult ==  (UInt32)GapiResults.GD_OK){ return;}
@@ -79,72 +27,7 @@ namespace GapiDrawNet
 			
 			throw new Exception("Error " + hResult.ToString("X") + ": " + ErrorMessage + " (" + additionalInfo + ")");
 		}
-
-		static uint SEED = 93186752;
-		public static int Random(int uBound)
-		{			
-			const uint a = 1588635695;
-			const uint q = 2, r = 1117695901;
-
-			SEED = a*(SEED % q) - r*(SEED / q);
-			return (int)(SEED % uBound);
-		}
-
-		public static int[] _CuttoffPoints = null;
-		public static void InitialiseBiasCutoffPoints(int uBound)
-		{
-			int max = (int)(uBound * 1.5)+1;
-
-			_CuttoffPoints = new int[max];
-
-			int cuttoff = 0;
-			for(int f = 0; f< max; f++)
-			{
-				
-				_CuttoffPoints[f] = cuttoff;	
-				cuttoff += f + 1;
-			}
-		}
-
-		public static int _HighBiasedValue(int uBound, int value)
-		{
-			for(int f = uBound-1; f >= 0; f--)
-			{
-				if(value >= _CuttoffPoints[f])
-				{
-					return f;
-				}				
-			}
-			return 0;
-		}
-
-		public static int _LowBiasedValue(int uBound, int value)
-		{
-			return uBound - 1 - _HighBiasedValue(uBound, value);
-		}
-
-		public static int LowBiasedRandom(int uBound)
-		{	
-			if(_CuttoffPoints == null || _CuttoffPoints.Length < uBound)
-			{
-				InitialiseBiasCutoffPoints(uBound);
-			}
-
-			int max = _CuttoffPoints[uBound];
-			int point = Random(max);
-			return _LowBiasedValue(uBound, point);
-		}
-
-		public static bool OnceInAWhile(int odds)
-		{
-			return Random(odds) == 0;
-		}
-
-		public static bool FlipACoin()
-		{
-			return Random(2) == 0;
-		}
-
+		
 		public static string GetErrorMessage(UInt32 hResult)
 		{
 			switch(hResult)
