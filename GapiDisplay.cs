@@ -10,20 +10,20 @@ namespace GapiDrawNet
 	public class GapiDisplay : GapiSurface
 	{
         public GapiDisplay()
-            : base(GdNet.CGapiDisplay_Create(GapiDraw.GlobalHandle), true)
+            : base(GdApi.CGapiDisplay_Create(GapiDraw.GlobalHandle), true)
 		{
         }
 
         protected override void DestroyGapiObject(IntPtr gapiObject)
         {
-            CheckResult(GdNet.CGapiDisplay_Destroy(Handle));
+            CheckResult(GdApi.CGapiDisplay_Destroy(Handle));
         }
 
         public GapiSurface BackBuffer
         {
             get
             {
-                IntPtr handle = GdNet.CGapiDisplay_GetBackBuffer(Handle);
+                IntPtr handle = GdApi.CGapiDisplay_GetBackBuffer(Handle);
                 return handle != IntPtr.Zero ? new GapiSurface(handle, false) : null;
             }
         }
@@ -46,7 +46,7 @@ namespace GapiDrawNet
         public void OpenDisplay(OpenDisplayOptions flags, IntPtr hWnd,
             int width, int height, int zoomWidth, int zoomHeight, int bpp, int hz)
 		{
-            CheckResult(GdNet.CGapiDisplay_OpenDisplay(Handle, flags, hWnd, width, height,
+            CheckResult(GdApi.CGapiDisplay_OpenDisplay(Handle, flags, hWnd, width, height,
                 zoomWidth, zoomHeight, bpp, hz));
         }
 
@@ -55,31 +55,31 @@ namespace GapiDrawNet
         // public static extern UInt32 CGapiDisplay_CreateOffscreenDisplay(IntPtr pDisplay, int dwFlags, int dwWidth, int dwHeight);
 		public void CreateOffscreenDisplay(GapiDrawNet.OpenDisplayOptions flags, int dwWidth, int dwHeight)
 		{
-			GapiUtility.RaiseExceptionOnError (GdNet.CGapiDisplay_CreateOffscreenDisplay(Handle, (int)flags, dwWidth, dwHeight));
+			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_CreateOffscreenDisplay(Handle, (int)flags, dwWidth, dwHeight));
 		}
 
 		// public static extern UInt32 CGapiDisplay_OpenDisplayByName(IntPtr pDisplay, string pWindow, int dwFlags, int dwWidth, int dwHeight, int dwZoomWidth, int dwZoomHeight, int dwBPP, int dwHz);
 		public void OpenDisplay(string windowName, GapiDrawNet.OpenDisplayOptions flags, int dwWidth, int dwHeight, int dwZoomWidth, int dwZoomHeight, int dwBPP, int dwHz)
 		{
-			GapiUtility.RaiseExceptionOnError (GdNet.CGapiDisplay_OpenDisplayByName(Handle, (int)flags, windowName, dwWidth,dwHeight, dwZoomWidth, dwZoomHeight, dwBPP, dwHz));
+			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_OpenDisplayByName(Handle, (int)flags, windowName, dwWidth,dwHeight, dwZoomWidth, dwZoomHeight, dwBPP, dwHz));
 		}
 
 		public void OpenDisplay(string windowName, GapiDrawNet.OpenDisplayOptions flags)
 		{
-			GapiUtility.RaiseExceptionOnError (GdNet.CGapiDisplay_OpenDisplayByName(Handle, (int)flags, windowName, 240,320, 0, 0, 16, 0));
+			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_OpenDisplayByName(Handle, (int)flags, windowName, 240,320, 0, 0, 16, 0));
 
 		}
 
 		public void OpenDisplay(string windowName)
 		{
-			GapiUtility.RaiseExceptionOnError (GdNet.CGapiDisplay_OpenDisplayByName(Handle, 0, windowName, 240,320, 0, 0, 16, 0));
+			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_OpenDisplayByName(Handle, 0, windowName, 240,320, 0, 0, 16, 0));
         }
 
         #region CloseDisplay
 
         public void CloseDisplay()
         {
-            CheckResult(GdNet.CGapiDisplay_CloseDisplay(Handle));
+            CheckResult(GdApi.CGapiDisplay_CloseDisplay(Handle));
         }
 
         #endregion
@@ -91,12 +91,12 @@ namespace GapiDrawNet
             get
             {
                 DisplayMode mode;
-                CheckResult(GdNet.CGapiDisplay_GetDisplayMode(Handle, out mode));
+                CheckResult(GdApi.CGapiDisplay_GetDisplayMode(Handle, out mode));
                 return mode;
             }
             set
             {
-                CheckResult(GdNet.CGapiDisplay_SetDisplayMode(Handle, value));
+                CheckResult(GdApi.CGapiDisplay_SetDisplayMode(Handle, value));
             }
         }
 
@@ -113,18 +113,18 @@ namespace GapiDrawNet
 
 		public bool SurfacesAreLost()
 		{
-			return ((uint)GapiResults.GDERR_SURFACELOST) == GdNet.CGapiDisplay_SurfacesAreLost(Handle);
+			return ((uint)GapiResults.GDERR_SURFACELOST) == GdApi.CGapiDisplay_SurfacesAreLost(Handle);
 		}
 
 		public void  RestoreAllVideoSurfaces()
 		{
-			GdNet.CGapiDisplay_RestoreAllVideoSurfaces(Handle);
+			GdApi.CGapiDisplay_RestoreAllVideoSurfaces(Handle);
 		}
 
 		//		public static extern UInt32 CGapiDisplay_Flip (IntPtr pDisplay);
 		public void Flip()
 		{
-			uint hResult = GdNet.CGapiDisplay_Flip(Handle);
+			uint hResult = GdApi.CGapiDisplay_Flip(Handle);
 
 			if(hResult == (uint)GapiResults.GD_OK){ return; }
 			//if(hResult == (uint)GapiResults.GDERR_BACKBUFFERLOST)
@@ -133,39 +133,39 @@ namespace GapiDrawNet
 				RestoreAllVideoSurfaces();
 				return;
 			}
-			GapiUtility.RaiseExceptionOnError (hResult);
+			GapiErrorHelper.RaiseExceptionOnError (hResult);
 		}
 
 
 		//		public static extern UInt32 CGapiDisplay_SuspendDisplay (IntPtr pDisplay);
         public void SuspendDisplay()
         {
-            GapiUtility.RaiseExceptionOnError(GdNet.CGapiDisplay_SuspendDisplay(Handle));
+            GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiDisplay_SuspendDisplay(Handle));
         }
 
 		//		public static extern UInt32 CGapiDisplay_ResumeDisplay (IntPtr pDisplay);
         public void ResumeDisplay()
         {
-            GapiUtility.RaiseExceptionOnError(GdNet.CGapiDisplay_ResumeDisplay(Handle));
+            GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiDisplay_ResumeDisplay(Handle));
         }
 
 		//		public static extern UInt32 CGapiDisplay_DeviceToLogicalRect (IntPtr pDisplay, ref GDRect pRect);
 		public void DeviceToLogicalRect(ref GDRect pRect)
 		{
-			GapiUtility.RaiseExceptionOnError (GdNet.CGapiDisplay_DeviceToLogicalRect(Handle, ref pRect));
+			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_DeviceToLogicalRect(Handle, ref pRect));
 		}
 
 		//		public static extern UInt32 CGapiDisplay_DeviceToLogicalPoint (IntPtr pDisplay, ref System.Drawing.Point pPoint);
 		public void DeviceToLogicalPoint(ref System.Drawing.Point pPoint)
 		{
-			GapiUtility.RaiseExceptionOnError (GdNet.CGapiDisplay_DeviceToLogicalPoint(Handle, ref pPoint));
+			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_DeviceToLogicalPoint(Handle, ref pPoint));
 		}
 
 		static public IntPtr SystemFontPtr = IntPtr.Zero;
 
 		public int RenderSystemFont(int dwColor)
 		{
-			int result = (int)GdNet.CGapiDisplay_RenderSystemFont(Handle, dwColor);
+			int result = (int)GdApi.CGapiDisplay_RenderSystemFont(Handle, dwColor);
 			SystemFontPtr = GetSystemFontPtr();
 			return result;
 		}
@@ -175,18 +175,18 @@ namespace GapiDrawNet
 		public int GetTextWidth(string drawString)
 		{
 			int result;
-			GdNet.CGapiBitmapFont_GetStringWidth (GetSystemFontPtr(), drawString, out result);
+			GdApi.CGapiBitmapFont_GetStringWidth (GetSystemFontPtr(), drawString, out result);
 			return result;
 		}
 		
 		public IntPtr GetSystemFontPtr()
 		{
-			return GdNet.CGapiDisplay_GetSystemFont (Handle);
+			return GdApi.CGapiDisplay_GetSystemFont (Handle);
 		}
 
 		public IntPtr GetSystemFontBorderPtr()
 		{
-			return GdNet.CGapiDisplay_GetSystemFontBorder(Handle);
+			return GdApi.CGapiDisplay_GetSystemFontBorder(Handle);
 		}
 
 		public void DrawOntoDcXp(IntPtr hdc, int x, int y)		
@@ -202,7 +202,7 @@ namespace GapiDrawNet
 			{
 				try
 				{
-					GdNet.BitBltXp(hdc, x, y, Width, Height, hdcSurf, 0, 0, 0x00CC0020);
+					GdApi.BitBltXp(hdc, x, y, Width, Height, hdcSurf, 0, 0, 0x00CC0020);
 				}
 				finally
 				{
@@ -219,7 +219,7 @@ namespace GapiDrawNet
 			{
 				try
 				{
-					GdNet.BitBltPpp(hdc, x, y, Width, Height, hdcSurf, 0, 0, 0x00CC0020);
+					GdApi.BitBltPpp(hdc, x, y, Width, Height, hdcSurf, 0, 0, 0x00CC0020);
 				}
 				finally
 				{

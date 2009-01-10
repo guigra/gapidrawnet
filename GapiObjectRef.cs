@@ -58,7 +58,7 @@ namespace GapiDrawNet
 
         protected uint CheckResult(uint result)
         {
-            GapiUtility.RaiseExceptionOnError(result);
+            GapiErrorHelper.RaiseExceptionOnError(result);
             return result;
         }
 

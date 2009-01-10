@@ -16,27 +16,27 @@ namespace GapiDrawNet
 
 		public GapiTimer()
 		{
-			unmanagedGapiObject = GdNet.CGapiTimer_Create();
+			unmanagedGapiObject = GdApi.CGapiTimer_Create();
 		}
 
 		virtual public void Dispose()
 		{
-			GdNet.CGapiTimer_Destroy(unmanagedGapiObject);
+			GdApi.CGapiTimer_Destroy(unmanagedGapiObject);
 		}
 
 		public void StartTimer(int TargetFrameRate)
 		{
-			UInt32 hResult = GdNet.CGapiTimer_StartTimer(unmanagedGapiObject, TargetFrameRate);
+			UInt32 hResult = GdApi.CGapiTimer_StartTimer(unmanagedGapiObject, TargetFrameRate);
 			// int hResult = CGapiTimer_StartTimer(unmanagedGapiObject, TargetFrameRate);
 		}
 
 		public GapiResults WaitForNextFrame()
 		{
-			GapiResults hResult = (GapiResults)GdNet.CGapiTimer_WaitForNextFrame(unmanagedGapiObject);
+			GapiResults hResult = (GapiResults)GdApi.CGapiTimer_WaitForNextFrame(unmanagedGapiObject);
 
 			if(hResult != 0 && hResult != GapiResults.GDERR_FRAMETIMEOVERFLOW)
 			{
-				GapiUtility.RaiseExceptionOnError((uint)hResult);
+				GapiErrorHelper.RaiseExceptionOnError((uint)hResult);
 			}
 			
 			return (GapiResults)hResult;
@@ -45,7 +45,7 @@ namespace GapiDrawNet
 		public double GetActualFrameRate()
 		{
 			float pActualFrameRate = 0;
-			UInt32 hResult = GdNet.CGapiTimer_GetActualFrameRate(unmanagedGapiObject, ref pActualFrameRate);
+			UInt32 hResult = GdApi.CGapiTimer_GetActualFrameRate(unmanagedGapiObject, ref pActualFrameRate);
 
 			return pActualFrameRate;
 		}
@@ -54,7 +54,7 @@ namespace GapiDrawNet
 		{
 			float pActualFrameTime = 0;
 
-			GdNet.CGapiTimer_GetActualFrameTime(unmanagedGapiObject, ref pActualFrameTime);
+			GdApi.CGapiTimer_GetActualFrameTime(unmanagedGapiObject, ref pActualFrameTime);
 			return pActualFrameTime;
 		}
 	}

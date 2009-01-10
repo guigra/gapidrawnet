@@ -17,12 +17,12 @@ namespace GapiDrawNet
 
 		virtual public void Dispose()
 		{
-			GdNet.CGapiInput_Destroy(unmanagedGapiObject);
+			GdApi.CGapiInput_Destroy(unmanagedGapiObject);
 		}
 
 		public GapiInput()
 		{
-			unmanagedGapiObject = GdNet.CGapiInput_Create();
+			unmanagedGapiObject = GdApi.CGapiInput_Create();
 		}
 
 		protected IntPtr unmanagedGapiObject;
@@ -35,9 +35,9 @@ namespace GapiDrawNet
 //		public static extern UInt32 CGapiInput_GetKeyList(IntPtr pInput, ref GDKEYLIST pKeyList);
 		public UInt32 GetKeyList(ref GDKEYLIST pKeyList)
 		{
-			UInt32 hResult = GdNet.CGapiInput_GetKeyList(unmanagedGapiObject, ref pKeyList);
+			UInt32 hResult = GdApi.CGapiInput_GetKeyList(unmanagedGapiObject, ref pKeyList);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}
@@ -46,9 +46,9 @@ namespace GapiDrawNet
 //		public static extern UInt32 CGapiInput_OpenInput(IntPtr pInput);
 		public UInt32 OpenInput()
 		{
-			UInt32 hResult = GdNet.CGapiInput_OpenInput(unmanagedGapiObject);
+			UInt32 hResult = GdApi.CGapiInput_OpenInput(unmanagedGapiObject);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}
@@ -57,9 +57,9 @@ namespace GapiDrawNet
 //		public static extern UInt32 CGapiInput_CloseInput(IntPtr pInput);
 		public UInt32 CloseInput()
 		{
-			UInt32 hResult = GdNet.CGapiInput_CloseInput(unmanagedGapiObject);
+			UInt32 hResult = GdApi.CGapiInput_CloseInput(unmanagedGapiObject);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}

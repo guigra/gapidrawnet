@@ -16,24 +16,24 @@ namespace GapiDrawNet
 //		private static extern int  CGapiBitmapFont_Destroy(IntPtr pApp);
 
 		public GapiBitmapFont()
-            : base(GdNet.CGapiBitmapFont_Create(), true)
+            : base(GdApi.CGapiBitmapFont_Create(), true)
 		{
 		}
 
         protected override void DestroyGapiObject(IntPtr gapiObject)
         {
-            CheckResult(GdNet.CGapiBitmapFont_Destroy(Handle));
+            CheckResult(GdApi.CGapiBitmapFont_Destroy(Handle));
         }
 
 		// public static extern UInt32 CGapiBitmapFont_CreateFont (IntPtr pBitmapFont, int dwFlags, ref GDFONTFX pGDFontFx);
 		public void CreateFont(CreateFontOptions dwFlags, GDFONTFX gdFontFx)
 		{
-			GapiUtility.RaiseExceptionOnError (GdNet.CGapiBitmapFont_CreateFont_NoString(Handle, 0, GetPixel(0, 0), (int)dwFlags, ref gdFontFx));
+			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_CreateFont_NoString(Handle, 0, GetPixel(0, 0), (int)dwFlags, ref gdFontFx));
 		}
 
 		public void CreateFont(string pString, int dwColorkey, CreateFontOptions dwFlags, GDFONTFX gdFontFx)
 		{
-			GapiUtility.RaiseExceptionOnError (GdNet.CGapiBitmapFont_CreateFont(Handle, pString, dwColorkey, (int)dwFlags, ref gdFontFx));
+			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_CreateFont(Handle, pString, dwColorkey, (int)dwFlags, ref gdFontFx));
 		}
 		public void CreateFont(string bitmapFilename)
 		{
@@ -69,14 +69,14 @@ namespace GapiDrawNet
 		// public static extern UInt32 CGapiBitmapFont_SetKerning (IntPtr pBitmapFont, char tcPreviousChar, char tcCharToAdjust, int lOffset);
 		public void SetKerning(char tcPreviousChar, char tcCharToAdjust, int lOffset)
 		{
-			GapiUtility.RaiseExceptionOnError (GdNet.CGapiBitmapFont_SetKerning(Handle, tcPreviousChar, tcCharToAdjust, lOffset));
+			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_SetKerning(Handle, tcPreviousChar, tcCharToAdjust, lOffset));
 		}
 
 		public int GetTextWidth(string drawString)
 		{
 			int result;
 
-			GdNet.CGapiBitmapFont_GetStringWidth (Handle, drawString, out result);
+			GdApi.CGapiBitmapFont_GetStringWidth (Handle, drawString, out result);
 			return result;
 		}
 
@@ -85,7 +85,7 @@ namespace GapiDrawNet
 			// public static extern UInt32 CGapiBitmapFont_GetCharWidth (IntPtr pBitmapFont, char tcChar, out int pWidth);
 			int result;
 
-			GdNet.CGapiBitmapFont_GetCharWidth (Handle, tcChar, out result);
+			GdApi.CGapiBitmapFont_GetCharWidth (Handle, tcChar, out result);
 			return result;
 		}
 
@@ -94,7 +94,7 @@ namespace GapiDrawNet
 			// public static extern UInt32 CGapiBitmapFont_GetSpacing (IntPtr pBitmapFont, char tcChar1, char tcChar2, out int pWidth);
 			int result;
 
-			GdNet.CGapiBitmapFont_GetSpacing (Handle, tcChar1, tcChar2, out result);
+			GdApi.CGapiBitmapFont_GetSpacing (Handle, tcChar1, tcChar2, out result);
 			return result;
 		}
 	}

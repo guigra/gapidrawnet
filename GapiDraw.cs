@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GapiDrawNet
 {
@@ -10,12 +8,12 @@ namespace GapiDrawNet
 
         static GapiDraw()
         {
-            GlobalHandle = GdNet.CGapiDraw_Create();
+            GlobalHandle = GdApi.CGapiDraw_Create();
         }
 
         public static void Dispose()
         {
-            GdNet.CGapiDraw_Destroy(GlobalHandle);
+            GdApi.CGapiDraw_Destroy(GlobalHandle);
         }
     }
 }

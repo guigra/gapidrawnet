@@ -4,8 +4,6 @@ using System.Runtime.InteropServices;
 
 namespace GapiDrawNet
 {
-	// TODO : TEST THESE
-
 	public class GapiRGBASurface : IDisposable
 	{
         Size size;
@@ -18,7 +16,7 @@ namespace GapiDrawNet
 
 		public GapiRGBASurface()
 		{			
-			unmanagedGapiObject = GdNet.CGapiRGBASurface_Create(GapiDraw.GlobalHandle);
+			unmanagedGapiObject = GdApi.CGapiRGBASurface_Create(GapiDraw.GlobalHandle);
 		}
 
 		public GapiRGBASurface(IntPtr gapiObject)
@@ -44,15 +42,15 @@ namespace GapiDrawNet
 		virtual public void Dispose()
 		{
 			OwnsGapiObject = false;
-			GdNet.CGapiRGBASurface_Destroy(unmanagedGapiObject);
+			GdApi.CGapiRGBASurface_Destroy(unmanagedGapiObject);
 		}
 
 		public UInt32 CreateSurface(string fileName)
 		{
 			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdNet.CGapiRGBASurface_CreateSurfaceFromFile(unmanagedGapiObject, 0, fileName);
+			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurfaceFromFile(unmanagedGapiObject, 0, fileName);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}
@@ -60,9 +58,9 @@ namespace GapiDrawNet
 		public UInt32 CreateSurface(GapiRGBASurface srcSurface)
 		{
 			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdNet.CGapiRGBASurface_CreateSurfaceFromSurface(unmanagedGapiObject, srcSurface.unmanagedGapiObject);
+			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurfaceFromSurface(unmanagedGapiObject, srcSurface.unmanagedGapiObject);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}
@@ -70,18 +68,18 @@ namespace GapiDrawNet
 		public UInt32 CreateSurface(CreateSurfaceOptions dwFlags, string fileName)
 		{
 			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdNet.CGapiRGBASurface_CreateSurfaceFromFile(unmanagedGapiObject, (int)dwFlags, fileName);
+			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurfaceFromFile(unmanagedGapiObject, (int)dwFlags, fileName);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}
 		
 		public UInt32 CreateSurface(byte[] imageBytes, CreateSurfaceOptions dwFlags)
 		{
-			UInt32 hResult = GdNet.CGapiRGBASurface_CreateSurfaceFromMem (unmanagedGapiObject, (int)dwFlags, imageBytes, imageBytes.Length);
+			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurfaceFromMem (unmanagedGapiObject, (int)dwFlags, imageBytes, imageBytes.Length);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}
@@ -90,9 +88,9 @@ namespace GapiDrawNet
 
 		public UInt32 CreateSurface(IntPtr hInstance, CreateSurfaceOptions dwFlags, int dwResourceID, string pResourceType)
 		{
-			UInt32 hResult = GdNet.CGapiRGBASurface_CreateSurfaceFromRes(unmanagedGapiObject, (int)dwFlags, hInstance, dwResourceID, pResourceType);
+			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurfaceFromRes(unmanagedGapiObject, (int)dwFlags, hInstance, dwResourceID, pResourceType);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 
 			return hResult;
 		}
@@ -101,21 +99,21 @@ namespace GapiDrawNet
 		public void CreateSurface(CreateSurfaceOptions dwFlags, int dwWidth, int dwHeight)
 		{
 			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdNet.CGapiRGBASurface_CreateSurface(unmanagedGapiObject, (int)dwFlags, dwWidth, dwHeight);
+			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurface(unmanagedGapiObject, (int)dwFlags, dwWidth, dwHeight);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 		}
 
 		public void CreateSurface(int dwWidth, int dwHeight)
 		{
 			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdNet.CGapiRGBASurface_CreateSurface(unmanagedGapiObject, 0, dwWidth, dwHeight);
+			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurface(unmanagedGapiObject, 0, dwWidth, dwHeight);
 
-			GapiUtility.RaiseExceptionOnError(hResult);
+			GapiErrorHelper.RaiseExceptionOnError(hResult);
 		}
 		public int GetWidth()
 		{
-			return GdNet.CGapiRGBASurface_GetWidth(unmanagedGapiObject);
+			return GdApi.CGapiRGBASurface_GetWidth(unmanagedGapiObject);
 		}
 
 		public int Width
@@ -125,7 +123,7 @@ namespace GapiDrawNet
 
 		public int GetHeight()
 		{
-			return GdNet.CGapiRGBASurface_GetHeight(unmanagedGapiObject);
+			return GdApi.CGapiRGBASurface_GetHeight(unmanagedGapiObject);
 		}
 
 		public int Height
@@ -136,14 +134,14 @@ namespace GapiDrawNet
 		//		public UInt32 CGapiRGBASurface_GetBuffer (IntPtr pSurface, ref GDBUFFERDESC pGDBufferDesc);
 		public void GetBuffer(ref GDBUFFERDESC pGDBufferDesc)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiRGBASurface_GetBuffer(unmanagedGapiObject, ref pGDBufferDesc));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiRGBASurface_GetBuffer(unmanagedGapiObject, ref pGDBufferDesc));
 		}
 
 		
 		//		public UInt32 CGapiRGBASurface_ReleaseBuffer (IntPtr pSurface);
 		public void ReleaseBuffer(IntPtr hDC)
 		{
-			GapiUtility.RaiseExceptionOnError(GdNet.CGapiRGBASurface_ReleaseBuffer(unmanagedGapiObject));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiRGBASurface_ReleaseBuffer(unmanagedGapiObject));
 		}
 	}
 }
