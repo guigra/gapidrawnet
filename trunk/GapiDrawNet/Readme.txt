@@ -1,8 +1,8 @@
 
 GapiDrawNet is a wrapper around GapiDraw (www.gapidraw.com).
 
-GapidrawNet was originally created by:
+GapiDrawNet is an updated version of GapiDraw.NET, which was created by:
 	Sean Cross
-	Intuitex Software
-	www.intuitex.com
-	gapi@intuitex.com
+	Source IT Software
+	http://www.sourceitsoftware.com/ppcdev.html
+	sean@picsprint.com
