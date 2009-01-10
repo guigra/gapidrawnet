@@ -4,15 +4,115 @@ using System.Runtime.InteropServices;
 namespace GapiDrawNet
 {
 	public class GdNet
-	{
-// Added by nick - maybe new for 401? also, to help run on desktop+device.
+    {
+        const string GapiDraw = "GapiDraw.dll";
 
-        static readonly bool OnDesktop = Environment.OSVersion.Platform != PlatformID.WinCE;
+        #region GapiDraw
 
-        [DllImport("GapiDraw.dll")]
+        [DllImport(GapiDraw)]
         public static extern IntPtr CGapiDraw_Create();
-        [DllImport("GapiDraw.dll")]
+
+        [DllImport(GapiDraw)]
         public static extern UInt32 CGapiDraw_Destroy(IntPtr pGapiDraw);
+
+        #endregion
+
+        #region GapiDisplay
+
+        [DllImport(GapiDraw)]
+        public static extern IntPtr CGapiDisplay_Create(IntPtr pGapiDraw);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiDisplay_Destroy(IntPtr pDisplay);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiDisplay_OpenDisplay(IntPtr pDisplay,
+            OpenDisplayOptions dwFlags, IntPtr hWnd, int dwWidth, int dwHeight, 
+            int dwZoomWidth, int dwZoomHeight, int dwBPP, int dwHz);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiDisplay_CloseDisplay(IntPtr pDisplay);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiDisplay_SetDisplayMode(IntPtr pDisplay, DisplayMode dwMode);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiDisplay_GetDisplayMode(IntPtr pDisplay, out DisplayMode pMode);
+
+        #endregion
+
+        #region GapiSurface
+
+        [DllImport(GapiDraw)]
+        public static extern IntPtr CGapiSurface_Create(IntPtr pGapiDraw);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiSurface_Destroy(IntPtr pSurface);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiSurface_CreateSurfaceFromFile(IntPtr pSurface,
+            int dwFlags, string pImageFile);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiSurface_CreateSurfaceFromMem(IntPtr pSurface,
+            int dwFlags, byte[] imageBytes, int dwImageFileSize);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiSurface_CreateSurfaceFromRes(IntPtr pSurface,
+            int dwFlags, IntPtr hInstance, int dwResourceID, string pResourceType);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiSurface_CreateSurfaceFromSurface(IntPtr pSurface, 
+            IntPtr pSrcSurface);
+
+        [DllImport(GapiDraw)]
+        public static extern UInt32 CGapiSurface_CreateSurface(IntPtr pSurface,
+            int dwFlags, int dwWidth, int dwHeight);
+
+        [DllImport(GapiDraw)]
+        public static extern int CGapiSurface_GetWidth(IntPtr pSurface);
+
+        [DllImport(GapiDraw)]
+        public static extern int CGapiSurface_GetHeight(IntPtr pSurface);
+
+        [DllImport(GapiDraw)]
+        public unsafe static extern uint CGapiSurface_SetClipper(IntPtr pSurface,
+            GDRect* pRect);
+
+        [DllImport(GapiDraw)]
+        public unsafe static extern uint CGapiSurface_Blt(IntPtr pSurface,
+            GDRect* pDestRect, IntPtr pSrcSurface, GDRect* pSrcRect,
+            BltOptions dwFlags, GDBLTFX* pGDBltFx);
+
+        [DllImport(GapiDraw)]
+        public unsafe static extern uint CGapiSurface_BltFast(IntPtr pSurface,
+            int destX, int destY, IntPtr pSrcSurface, GDRect* pSrcRect,
+            BltFastOptions dwFlags, GDBLTFASTFX* pGDBltFastFx);
+
+        [DllImport(GapiDraw)]
+        public unsafe static extern uint CGapiSurface_AlphaBltFast(IntPtr pSurface,
+            int destX, int destY, IntPtr pSrcSurface, GDRect* pSrcRect,
+            IntPtr pAlphaSurface, GDRect* pAlphaRect,
+            AlphaBltFastOptions dwFlags, GDALPHABLTFASTFX* pGDABltFastFx);
+
+        [DllImport(GapiDraw)]
+        public unsafe static extern uint CGapiSurface_AlphaBltFastRgba(IntPtr pSurface,
+            int destX, int destY, IntPtr pSrcSurface, GDRect* pSrcRect,
+            AlphaBltFastOptions dwFlags, GDALPHABLTFASTFX* pGDABltFastFx);
+
+        [DllImport(GapiDraw)]
+        public unsafe static extern uint CGapiSurface_DrawLine(IntPtr pSurface,
+            int x1, int y1, int x2, int y2, int dwColor,
+            DrawLineOptions dwFlags, GDLINEFX* pGDLineFx);
+
+        [DllImport(GapiDraw)]
+        public unsafe static extern uint CGapiSurface_FillRect(IntPtr pSurface,
+            GDRect* pRect, int dwColor,
+            FillRectOptions dwFlags, GDFILLRECTFX* pGDFillRectFx);
+
+        #endregion
+
+        // Everything below is from the older Intuitex package, needs to be cleaned up to match above
 
 // NEW FOR 201
 		[DllImport("GapiDraw.dll")]
@@ -61,58 +161,6 @@ namespace GapiDrawNet
 
 
 ///    SAME AS IN GAPI 104
-
-
-        public static IntPtr CGapiSurface_Create(IntPtr pGapiDraw)
-        {
-            if (OnDesktop) return CGapiSurface_Create_Desktop(pGapiDraw);
-            else return CGapiSurface_Create_Device(pGapiDraw);
-        }
-
-		[DllImport("GapiDraw.dll", EntryPoint = "_CGapiSurface_Create@4")]
-		public static extern IntPtr CGapiSurface_Create_Desktop(IntPtr pGapiDraw);
-        [DllImport("GapiDraw.dll", EntryPoint = "CGapiSurface_Create")]
-        public static extern IntPtr CGapiSurface_Create_Device(IntPtr pGapiDraw);
-
-
-//		public static extern UInt32 CGapiSurface_Destroy(IntPtr pSurface);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_Destroy(IntPtr pSurface);
-
-
-//		public static extern UInt32 CGapiSurface_CreateSurfaceFromFile(IntPtr pSurface, string pImageFile);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_CreateSurfaceFromFile(IntPtr pSurface, int dwFlags, string pImageFile);
-
-
-//		public static extern UInt32 CGapiSurface_CreateSurfaceFromMem(IntPtr pSurface, IntPtr pImageFileMem, int dwImageFileSize);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_CreateSurfaceFromMem(IntPtr pSurface, int dwFlags, byte[] imageBytes, int dwImageFileSize);
-
-
-//		public static extern UInt32 CGapiSurface_CreateSurfaceFromRes(IntPtr pSurface, IntPtr hInstance, int dwResourceID, string pResourceType);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_CreateSurfaceFromRes(IntPtr pSurface, int dwFlags, IntPtr hInstance, int dwResourceID, string pResourceType);
-
-		// todo : impliment
-//		public static extern UInt32 CGapiSurface_CreateSurfaceFromSurface(CGapiSurface* pSurface, CGapiSurface* pSrcSurface);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_CreateSurfaceFromSurface(IntPtr pSurface, IntPtr pSrcSurface);
-
-//		public static extern UInt32 CGapiSurface_CreateSurfaceOfSize(IntPtr pSurface, int dwFlags, int dwWidth, int dwHeight);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_CreateSurface(IntPtr pSurface, int dwFlags, int dwWidth, int dwHeight);
-
-
-//		public static extern int CGapiSurface_GetWidth(IntPtr pSurface);
-		[DllImport("GapiDraw.dll")]
-		public static extern int CGapiSurface_GetWidth(IntPtr pSurface);
-
-
-//		public static extern int CGapiSurface_GetHeight(IntPtr pSurface);
-		[DllImport("GapiDraw.dll")]
-		public static extern int CGapiSurface_GetHeight(IntPtr pSurface);
-
 
 //		public static extern UInt32 CGapiSurface_GetColorKey(IntPtr pSurface, out int pColorKey);
 		[DllImport("GapiDraw.dll")]
@@ -172,44 +220,6 @@ namespace GapiDrawNet
 
 		[DllImport("GapiDraw.dll")]
 		public static extern UInt32 CGapiSurface_UnlockVideoSurface(IntPtr pSurface);
-
-
-
-        [DllImport("GapiDraw.dll")]
-        public unsafe static extern uint CGapiSurface_SetClipper(
-            IntPtr pSurface, GDRect* pRect);
-
-        [DllImport("GapiDraw.dll")]
-        public unsafe static extern uint CGapiSurface_Blt(
-            IntPtr pSurface, GDRect* pDestRect, IntPtr pSrcSurface, GDRect* pSrcRect, 
-            BltOptions dwFlags, GDBLTFX* pGDBltFx);
-
-        [DllImport("GapiDraw.dll")]
-        public unsafe static extern uint CGapiSurface_BltFast(
-            IntPtr pSurface, int destX, int destY, IntPtr pSrcSurface, GDRect* pSrcRect, 
-            BltFastOptions dwFlags, GDBLTFASTFX* pGDBltFastFx);
-
-		[DllImport("GapiDraw.dll")]
-		public unsafe static extern uint CGapiSurface_AlphaBltFast(
-            IntPtr pSurface, int destX, int destY, IntPtr pSrcSurface, GDRect* pSrcRect, 
-            IntPtr pAlphaSurface, GDRect* pAlphaRect,
-            AlphaBltFastOptions dwFlags, GDALPHABLTFASTFX* pGDABltFastFx);
-
-        [DllImport("GapiDraw.dll")]
-        public unsafe static extern uint CGapiSurface_AlphaBltFastRgba(
-            IntPtr pSurface, int destX, int destY, IntPtr pSrcSurface, GDRect* pSrcRect,
-            AlphaBltFastOptions dwFlags, GDALPHABLTFASTFX* pGDABltFastFx);
-
-        [DllImport("GapiDraw.dll")]
-        public unsafe static extern uint CGapiSurface_DrawLine(
-            IntPtr pSurface, int x1, int y1, int x2, int y2, int dwColor, 
-            DrawLineOptions dwFlags, GDLINEFX* pGDLineFx);
-
-        [DllImport("GapiDraw.dll")]
-        public unsafe static extern uint CGapiSurface_FillRect(
-            IntPtr pSurface, GDRect* pRect, int dwColor,
-            FillRectOptions dwFlags, GDFILLRECTFX* pGDFillRectFx);
-
 
 //		public static extern UInt32 CGapiSurface_AlphaBlt(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref GDALPHABLTFX pGDAlphaBltFx);
 		[DllImport("GapiDraw.dll")]
@@ -275,28 +285,6 @@ namespace GapiDrawNet
 		public static extern UInt32 CGapiSurface_NativeToColorref(IntPtr pSurface, int dwNative, out int pColor);
 
 
-        public static IntPtr CGapiDisplay_Create(IntPtr pGapiDraw)
-        {
-            if (OnDesktop) return CGapiDisplay_Create_Desktop(pGapiDraw);
-            else return CGapiDisplay_Create_Device(pGapiDraw);
-        }
-
-		[DllImport("GapiDraw.dll", EntryPoint = "_CGapiDisplay_Create@4")]
-		public static extern IntPtr CGapiDisplay_Create_Desktop(IntPtr pGapiDraw);
-        [DllImport("GapiDraw.dll", EntryPoint = "CGapiDisplay_Create")]
-        public static extern IntPtr CGapiDisplay_Create_Device(IntPtr pGapiDraw);
-
-
-//		public static extern UInt32 CGapiDisplay_Destroy(IntPtr pDisplay);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiDisplay_Destroy(IntPtr pDisplay);
-
-
-//		HRESULT __stdcall CGapiDisplay_OpenDisplay(CGapiDisplay* pDisplay, HWND hWnd, DWORD dwFlags, DWORD dwWidth, DWORD dwHeight, DWORD dwZoomWidth, DWORD dwZoomHeight, DWORD dwBPP, DWORD dwHz);
-//		HRESULT __stdcall CGapiDisplay_OpenDisplay(CGapiDisplay* pDisplay, DWORD dwFlags, HWND hWnd, DWORD dwWidth, DWORD dwHeight, DWORD dwZoomWidth, DWORD dwZoomHeight, DWORD dwBPP, DWORD dwHz);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiDisplay_OpenDisplay(IntPtr pDisplay, int dwFlags, IntPtr hWnd, int dwWidth, int dwHeight, int dwZoomWidth, int dwZoomHeight, int dwBPP, int dwHz);
-
 
 //	201  __stdcall CGapiDisplay_OpenDisplayByName(CGapiDisplay* pDisplay, const TCHAR* pWindow, DWORD dwFlags, DWORD dwWidth, DWORD dwHeight, DWORD dwZoomWidth, DWORD dwZoomHeight, DWORD dwBPP, DWORD dwHz);
 //  202	 __stdcall CGapiDisplay_OpenDisplayByName(CGapiDisplay* pDisplay, DWORD dwFlags, const TCHAR* pWindow, DWORD dwWidth, DWORD dwHeight, DWORD dwZoomWidth, DWORD dwZoomHeight, DWORD dwBPP, DWORD dwHz);
@@ -308,21 +296,6 @@ namespace GapiDrawNet
 //		CGapiDisplay_CreateOffscreenDisplay(CGapiDisplay* pDisplay, DWORD dwFlags, DWORD dwWidth, DWORD dwHeight);
 		[DllImport("GapiDraw.dll")]
 		public static extern UInt32 CGapiDisplay_CreateOffscreenDisplay(IntPtr pDisplay, int dwFlags, int dwWidth, int dwHeight);
-
-
-//		public static extern UInt32 CGapiDisplay_CloseDisplay(IntPtr pDisplay);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiDisplay_CloseDisplay(IntPtr pDisplay);
-
-
-//		public static extern UInt32 CGapiDisplay_SetDisplayMode(IntPtr pDisplay, int dwMode);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiDisplay_SetDisplayMode(IntPtr pDisplay, int dwMode);
-
-
-//		public static extern UInt32 CGapiDisplay_GetDisplayMode(IntPtr pDisplay, ref int pMode);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiDisplay_GetDisplayMode(IntPtr pDisplay, ref int pMode);
 
 
 //		public static extern UInt32 CGapiDisplay_GetDisplayCaps(IntPtr pDisplay, ref int pCaps);

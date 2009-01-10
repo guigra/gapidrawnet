@@ -8,28 +8,21 @@ namespace GapiDrawNet
 	/// </summary>
 	public class GapiMaskSurface : GapiSurface
 	{
-//		[DllImport("GdNet.dll")]
-//		private static extern IntPtr CGapiMaskSurface_Create();
-//		// private static extern int CGdApplication_Create(ref IntPtr pApp, IntPtr hInst);
-//
-//		[DllImport("GdNet.dll")]
-//		private static extern int  CGapiMaskSurface_Destroy(IntPtr pApp);
-
 		public GapiMaskSurface()
+            : base(GdNet.CGapiMaskSurface_Create(), true)
 		{
-			unmanagedGapiObject = GdNet.CGapiMaskSurface_Create();
 		}
 
-		override public void Dispose()
-		{
-			GdNet.CGapiMaskSurface_Destroy(unmanagedGapiObject);
-		}
+        protected override void DestroyGapiObject(IntPtr gapiObject)
+        {
+            CheckResult(GdNet.CGapiMaskSurface_Destroy(Handle));
+        }
 
 //		[DllImport("GdNet.DLL")]
 //		public static extern UInt32 CGapiMaskSurface_DrawMaskImage(IntPtr pMaskSurface, int dwX, int dwY, IntPtr pSrcSurface, ref GDRect pSrcRect, int dwMaskID);
 		public UInt32 DrawMask(int dwX, int dwY, GapiSurface srcSurface, ref GDRect pSrcRect, int dwMaskID)
 		{
-			UInt32 hResult = GdNet.CGapiMaskSurface_DrawMask(unmanagedGapiObject, dwX, dwY, srcSurface.GapiObject, ref pSrcRect, dwMaskID);
+			UInt32 hResult = GdNet.CGapiMaskSurface_DrawMask(Handle, dwX, dwY, srcSurface.Handle, ref pSrcRect, dwMaskID);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 
@@ -40,7 +33,7 @@ namespace GapiDrawNet
 //		public static extern UInt32 CGapiMaskSurface_DrawMaskRect(IntPtr pMaskSurface, ref GDRect pRect, int dwMaskID);
 		public UInt32 DrawMask(ref GDRect pRect, int dwMaskID)
 		{
-			UInt32 hResult = GdNet.CGapiMaskSurface_DrawMaskRect(unmanagedGapiObject, ref pRect, dwMaskID);
+			UInt32 hResult = GdNet.CGapiMaskSurface_DrawMaskRect(Handle, ref pRect, dwMaskID);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 
@@ -51,7 +44,7 @@ namespace GapiDrawNet
 //		public static extern UInt32 CGapiMaskSurface_DrawMaskPixel(IntPtr pMaskSurface, int dwX, int dwY, int dwMaskID);
 		public UInt32 DrawMask(int dwX, int dwY, int dwMaskID)
 		{
-			UInt32 hResult = GdNet.CGapiMaskSurface_DrawMaskPixel(unmanagedGapiObject, dwX, dwY, dwMaskID);
+			UInt32 hResult = GdNet.CGapiMaskSurface_DrawMaskPixel(Handle, dwX, dwY, dwMaskID);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 
@@ -63,7 +56,7 @@ namespace GapiDrawNet
 		public int GetMaskID(int dwX, int dwY, GapiSurface srcSurface, ref GDRect pSrcRect, ref System.Drawing.Point pIntersection)
 		{
 			int MaskID;
-			UInt32 hResult = GdNet.CGapiMaskSurface_GetMaskID(unmanagedGapiObject, dwX, dwY, srcSurface.GapiObject, ref pSrcRect, out MaskID, ref  pIntersection);
+			UInt32 hResult = GdNet.CGapiMaskSurface_GetMaskID(Handle, dwX, dwY, srcSurface.Handle, ref pSrcRect, out MaskID, ref  pIntersection);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 
@@ -75,7 +68,7 @@ namespace GapiDrawNet
 		public int GetMaskID(ref GDRect pSrcRect, ref System.Drawing.Point pIntersection)
 		{
 			int MaskID;
-			UInt32 hResult = GdNet.CGapiMaskSurface_GetMaskIDRect(unmanagedGapiObject, ref pSrcRect, out MaskID, ref  pIntersection);
+			UInt32 hResult = GdNet.CGapiMaskSurface_GetMaskIDRect(Handle, ref pSrcRect, out MaskID, ref  pIntersection);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 
@@ -86,7 +79,7 @@ namespace GapiDrawNet
 		public int GetMaskID(int dwX, int dwY, ref System.Drawing.Point pIntersection)
 		{
 			int MaskID;
-			UInt32 hResult = GdNet.CGapiMaskSurface_GetMaskIDPixel(unmanagedGapiObject, dwX, dwY, out MaskID);
+			UInt32 hResult = GdNet.CGapiMaskSurface_GetMaskIDPixel(Handle, dwX, dwY, out MaskID);
 
 			GapiUtility.RaiseExceptionOnError(hResult);
 
