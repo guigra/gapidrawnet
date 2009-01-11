@@ -20,6 +20,9 @@ namespace GapiDrawNet
 		{
 		}
 
+        internal GapiBitmapFont(IntPtr handle, bool ownsHandle)
+            : base(handle, ownsHandle) { }
+
         protected override void DestroyGapiObject(IntPtr gapiObject)
         {
             CheckResult(GdApi.CGapiBitmapFont_Destroy(Handle));
@@ -33,7 +36,7 @@ namespace GapiDrawNet
 
 		public void CreateFont(string pString, int dwColorkey, CreateFontOptions dwFlags, GDFONTFX gdFontFx)
 		{
-			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_CreateFont(Handle, pString, dwColorkey, (int)dwFlags, ref gdFontFx));
+			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_CreateFont(Handle, Str(pString), dwColorkey, (int)dwFlags, ref gdFontFx));
 		}
 		public void CreateFont(string bitmapFilename)
 		{
@@ -43,7 +46,7 @@ namespace GapiDrawNet
 		public void CreateFontSimple(string bitmapFilename)
 		{
 			//			Call CGapiBitmapFont::CreateSurface and supply a valid font bitmap. 
-			CreateSurface(0, bitmapFilename);
+			CreateSurface(bitmapFilename);
 			//			Call CGapiBitmapFont::SetColorKey to specify the color key of your font bitmap. 
 			SetColorKeyFromBottomLeftCorner();
 			//			Call CGapiBitmapFont::CreateFont to calculate the font offsets and widths. 
@@ -55,7 +58,7 @@ namespace GapiDrawNet
 		public void CreateFontAdvanced(string bitmapFilename)
 		{
 			//			Call CGapiBitmapFont::CreateSurface and supply a valid font bitmap. 
-			CreateSurface(0, bitmapFilename);
+			CreateSurface(bitmapFilename);
 			//			Call CGapiBitmapFont::SetColorKey to specify the color key of your font bitmap. 
 			// get from bottom left corner
 			SetColorKeyFromBottomLeftCorner();
@@ -76,7 +79,7 @@ namespace GapiDrawNet
 		{
 			int result;
 
-			GdApi.CGapiBitmapFont_GetStringWidth (Handle, drawString, out result);
+			GdApi.CGapiBitmapFont_GetStringWidth (Handle, Str(drawString), out result);
 			return result;
 		}
 

@@ -70,11 +70,13 @@
     <Compile Include="GapiCursor.cs" />
     <Compile Include="GapiDisplay.cs" />
     <Compile Include="GapiDraw.cs" />
+    <Compile Include="GapiRgbaSurface.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GdEnums.cs" />
     <Compile Include="GapiInput.cs" />
     <Compile Include="GapiMaskSurface.cs" />
     <Compile Include="GapiObjectRef.cs" />
-    <Compile Include="GapiRGBASurface.cs" />
     <Compile Include="GdStructs.cs" />
     <Compile Include="GapiSurface.cs" />
     <Compile Include="GapiTimer.cs" />

@@ -14,8 +14,8 @@ namespace GapiDrawNet
         public GapiSurface()
             : base(GdApi.CGapiSurface_Create(GapiDraw.GlobalHandle)) { }
 
-        public GapiSurface(IntPtr gapiObject, bool ownsHandle)
-            : base(gapiObject, ownsHandle) { }
+        internal GapiSurface(IntPtr handle, bool ownsHandle)
+            : base(handle, ownsHandle) { }
 
         protected override void DestroyGapiObject(IntPtr gapiObject)
         {
@@ -24,71 +24,71 @@ namespace GapiDrawNet
 
         #region CreateSurface
 
-        public UInt32 CreateSurface(string fileName)
-		{
-			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdApi.CGapiSurface_CreateSurfaceFromFile(Handle, 0, fileName);
+        /// <summary>
+        /// Allocates memory for a surface of the given size and prepares it for graphic operations.
+        /// </summary>
+        public void CreateSurface(int width, int height)
+        {
+            CreateSurface(0, width, height);
+        }
 
-			GapiErrorHelper.RaiseExceptionOnError(hResult, fileName);
+        /// <summary>
+        /// Allocates memory for a surface of the given size and prepares it for graphic operations.
+        /// </summary>
+        public void CreateSurface(CreateSurfaceOptions options, int width, int height)
+        {
+            CheckResult(GdApi.CGapiSurface_CreateSurface(Handle, options, (uint)width, (uint)height));
+        }
 
-			return hResult;
-		}
+        /// <summary>
+        /// Creates the surface from the contents of the given file.
+        /// </summary>
+        public void CreateSurface(string fileName)
+        {
+            CreateSurface(fileName, 0);
+        }
 
-		public UInt32 CreateSurface(CreateSurfaceOptions dwFlags, string fileName)
-		{
-			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdApi.CGapiSurface_CreateSurfaceFromFile(Handle, (int)dwFlags, fileName);
+        /// <summary>
+        /// Creates the surface from the contents of the given file.
+        /// </summary>
+        public void CreateSurface(string fileName, CreateSurfaceOptions options)
+        {
+            CheckResult(GdApi.CGapiSurface_CreateSurfaceFromFile(Handle, options, Str(fileName)));
+        }
 
-			GapiErrorHelper.RaiseExceptionOnError(hResult, fileName);
+        /// <summary>
+        /// Creates the surface from the contents of the given byte array.
+        /// </summary>
+        public void CreateSurface(byte[] imageBytes)
+        {
+            CreateSurface(imageBytes, imageBytes.Length, 0);
+        }
 
-			return hResult;
-		}
-		
-		public UInt32 CreateSurface(GapiSurface srcSurface)
-		{
-			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdApi.CGapiSurface_CreateSurfaceFromSurface(Handle, srcSurface.Handle);
+        /// <summary>
+        /// Creates the surface from the contents of the given byte array.
+        /// </summary>
+        public void CreateSurface(byte[] imageBytes, int length, CreateSurfaceOptions options)
+        {
+            CheckResult(GdApi.CGapiSurface_CreateSurfaceFromMem(Handle,
+                options, imageBytes, (uint)length));
+        }
 
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
+        /// <summary>
+        /// Creates the surface from the given ID of a Win32 bitmap resource.
+        /// </summary>
+        public void CreateSurface(IntPtr hInstance, CreateSurfaceOptions options,
+            int resourceID, string resourceType)
+        {
+            CheckResult(GdApi.CGapiSurface_CreateSurfaceFromRes(Handle,
+                options, hInstance, (uint)resourceID, Str(resourceType)));
+        }
 
-			return hResult;
-		}
-
-		public UInt32 CreateSurface(byte[] imageBytes, CreateSurfaceOptions dwFlags)
-		{
-			UInt32 hResult = GdApi.CGapiSurface_CreateSurfaceFromMem (Handle, (int)dwFlags, imageBytes, imageBytes.Length);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
-		}
-		//		public UInt32 CreateSurfaceFromMem (IntPtr pSurface, ref byte pImageFileMem, int dwImageFileSize);
-		//		public UInt32 CreateSurfaceFromRes (IntPtr pSurface, IntPtr hInstance, int dwResourceID, string pResourceType);
-
-		public UInt32 CreateSurface(IntPtr hInstance, CreateSurfaceOptions dwFlags, int dwResourceID, string pResourceType)
-		{
-			UInt32 hResult = GdApi.CGapiSurface_CreateSurfaceFromRes(Handle, (int)dwFlags, hInstance, dwResourceID, pResourceType);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
-		}
-
-		//		public UInt32 CreateSurfaceOfSize (IntPtr pSurface, int dwFlags, int dwWidth, int dwHeight);
-		public void CreateSurface(CreateSurfaceOptions dwFlags, int dwWidth, int dwHeight)
-		{
-            // public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdApi.CGapiSurface_CreateSurface(Handle, (int)dwFlags, dwWidth, dwHeight);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-		}
-
-		public void CreateSurface(int dwWidth, int dwHeight)
-		{
-            // public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdApi.CGapiSurface_CreateSurface(Handle, 0, dwWidth, dwHeight);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
+        /// <summary>
+        /// Creates the surface by copying an existing surface.
+        /// </summary>
+        public void CreateSurface(GapiSurface sourceSurface)
+        {
+            CheckResult(GdApi.CGapiSurface_CreateSurfaceFromSurface(Handle, sourceSurface.Handle));
         }
 
         #endregion
@@ -97,12 +97,12 @@ namespace GapiDrawNet
 
         public int Width
 		{
-            get { return GdApi.CGapiSurface_GetWidth(Handle); }
+            get { return (int)GdApi.CGapiSurface_GetWidth(Handle); }
 		}
 
 		public int Height
 		{
-            get { return GdApi.CGapiSurface_GetHeight(Handle); }
+            get { return (int)GdApi.CGapiSurface_GetHeight(Handle); }
 		}
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace GapiDrawNet
 //		public UInt32 CGapiSurface_ReleaseBuffer (IntPtr pSurface);
 		public void ReleaseBuffer()
 		{
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_ReleaseBuffer(Handle));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_ReleaseBuffer());
 		}
 	
 		// TODO : TEST THESE
@@ -207,12 +207,12 @@ namespace GapiDrawNet
 //		public UInt32 CGapiSurface_SaveSurface (IntPtr pSurface, ref char pBitmapFile);
 		public void SaveSurface(string bitmapFilename, SaveSurfaceOptions options)
 		{
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SaveSurface(Handle, bitmapFilename, (int)options));
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SaveSurface(Handle, Str(bitmapFilename), (int)options));
 		}
 
 		public void SaveSurface(string bitmapFilename)
 		{
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SaveSurface(Handle, bitmapFilename, (int)SaveSurfaceOptions.GDSAVESURFACE_BMP), bitmapFilename);
+			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SaveSurface(Handle, Str(bitmapFilename), (int)SaveSurfaceOptions.GDSAVESURFACE_BMP), bitmapFilename);
 		}
 		
 //		public UInt32 CGapiSurface_GetSurfaceOptions (IntPtr pSurface, ref int pOptions);
@@ -382,36 +382,36 @@ namespace GapiDrawNet
         }
 
         /// <summary>
-        /// Blits the entire given GapiRGBASurface onto this surface at the given coordinates.
+        /// Blits the entire given GapiRgbaSurface onto this surface at the given coordinates.
         /// </summary>
-        public unsafe void AlphaBltFast(int x, int y, GapiRGBASurface surface)
+        public unsafe void AlphaBltFast(int x, int y, GapiRgbaSurface surface)
         {
             CheckResult(GdApi.CGapiSurface_AlphaBltFastRgba(
-                Handle, x, y, surface.GapiObject, null, 0, null));
+                Handle, x, y, surface.Handle, null, 0, null));
         }
 
         /// <summary>
-        /// Blits the given GapiRGBASurface region onto this surface at the given coordinates.
+        /// Blits the given GapiRgbaSurface region onto this surface at the given coordinates.
         /// </summary>
-        public unsafe void AlphaBltFast(int x, int y, GapiRGBASurface surface, GDRect surfaceRect)
+        public unsafe void AlphaBltFast(int x, int y, GapiRgbaSurface surface, GDRect surfaceRect)
         {
             CheckResult(GdApi.CGapiSurface_AlphaBltFastRgba(
-                Handle, x, y, surface.GapiObject, &surfaceRect, 0, null));
+                Handle, x, y, surface.Handle, &surfaceRect, 0, null));
         }
 
         /// <summary>
-        /// Blits the given GapiRGBASurface region onto this surface at the given coordinates at the given
+        /// Blits the given GapiRgbaSurface region onto this surface at the given coordinates at the given
         /// opacity.
         /// </summary>
         /// <param name="opacity">Uses the opacity value in pGDABltFastFx->dwOpacity to adjust the overall weight of the alpha blend. Allowed range is from 0 (transparent) to 255 (opaque). If the opacity is set to 128, an optimized blending mode will be used.</param>
-        public unsafe void AlphaBltFast(int x, int y, GapiRGBASurface surface, GDRect surfaceRect,
+        public unsafe void AlphaBltFast(int x, int y, GapiRgbaSurface surface, GDRect surfaceRect,
             int opacity)
         {
             GDALPHABLTFASTFX fx;
             fx.dwOpacity = opacity;
 
             CheckResult(GdApi.CGapiSurface_AlphaBltFastRgba(
-                Handle, x, y, surface.GapiObject, &surfaceRect,
+                Handle, x, y, surface.Handle, &surfaceRect,
                 AlphaBltFastOptions.GDALPHABLTFAST_OPACITY, &fx));
         }
 
@@ -571,7 +571,7 @@ namespace GapiDrawNet
 		{
 			int result;
 
-			GdApi.CGapiBitmapFont_GetStringWidth (font.Handle, drawString, out result);
+			GdApi.CGapiBitmapFont_GetStringWidth (font.Handle, Str(drawString), out result);
 			/// TODO : fix GetTextWidth
 			// GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_DrawTextBitmapFont(unmanagedGapiObject, 0, 0, drawString, font.GapiObject, (int)DrawTextOptions.GDDRAWTEXT_CALCWIDTH, 0, IntPtr.Zero, out result));
 			return result;
@@ -596,7 +596,7 @@ namespace GapiDrawNet
 		{
 			int result;
 			/// TODO : Overload with missing paramters
-			result = (int)GdApi.CGapiSurface_DrawText(Handle, dwX, dwY, drawString, pFont, (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);
+			result = (int)GdApi.CGapiSurface_DrawText(Handle, dwX, dwY, Str(drawString), pFont, (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);
 			return result;
 		}
 
@@ -604,7 +604,7 @@ namespace GapiDrawNet
 		{
 			int result;
 			/// TODO : Overload with missing paramters
-			result = (int)GdApi.CGapiSurface_DrawText(Handle, dwX, dwY, drawString, font.Handle, (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);
+			result = (int)GdApi.CGapiSurface_DrawText(Handle, dwX, dwY, Str(drawString), font.Handle, (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);
 			return result;
 		}
 		

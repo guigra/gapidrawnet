@@ -5,9 +5,9 @@ namespace System.Drawing
 {
     public static class ColorExtensions
     {
-        public static int ToColorRef(this Color c)
+        public static uint ToColorRef(this Color c)
         {
-            return c.R + (c.G << 8) + (c.B << 16);
+            return (uint)(c.R + (c.G << 8) + (c.B << 16));
         }
 
         public static Color ToColor(this int c)

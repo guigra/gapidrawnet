@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace HelloWorld.Desktop
 {
@@ -20,14 +21,24 @@ namespace HelloWorld.Desktop
 
         protected override void OpenDisplay()
         {
-            Display.CreateOffscreenDisplay(0, ClientSize.Width, ClientSize.Height);
+            Display.CreateOffscreenDisplay(ClientSize.Width, ClientSize.Height);
         }
 
         protected override void PaintBuffer(Graphics g)
         {
             IntPtr hDC = g.GetHdc();
-            Display.DrawOntoDcXp(hDC, 0, 0);
-            g.ReleaseHdc();
+            IntPtr hBufferDC = Display.BackBuffer.GetDC();
+
+            BitBlt(hDC, 0, 0, ClientSize.Width, ClientSize.Height, hBufferDC, 0, 0, SRCCOPY);
+
+            g.ReleaseHdc(hDC);
+            Display.BackBuffer.ReleaseDC(hBufferDC);
         }
+
+        const uint SRCCOPY = 0x00CC0020;
+
+        [DllImport("gdi32.dll")]
+        static extern bool BitBlt(IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight,
+            IntPtr hdcSrc, int nXSrc, int nYSrc, uint dwRop);
     }
 }

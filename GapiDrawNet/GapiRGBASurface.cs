@@ -4,144 +4,146 @@ using System.Runtime.InteropServices;
 
 namespace GapiDrawNet
 {
-	public class GapiRGBASurface : IDisposable
-	{
-        Size size;
-		protected IntPtr unmanagedGapiObject;
-		protected bool OwnsGapiObject = true;
-		public IntPtr GapiObject
-		{
-			get { return unmanagedGapiObject; }
-		}
+    /// <summary>
+    /// GapiRgbaSurface is a memory area with embedded alpha information. You can use it 
+    /// in operations such as GapiSurface.AlphaBlt for easy to use alpha blends.
+    /// </summary>
+    public class GapiRgbaSurface : GapiObjectRef
+    {
+        public GapiRgbaSurface()
+            : base(GdApi.CGapiRGBASurface_Create(GapiDraw.GlobalHandle))
+        {
+        }
 
-		public GapiRGBASurface()
-		{			
-			unmanagedGapiObject = GdApi.CGapiRGBASurface_Create(GapiDraw.GlobalHandle);
-		}
+        internal GapiRgbaSurface(IntPtr handle, bool ownsHandle)
+            : base(handle, ownsHandle) { }
 
-		public GapiRGBASurface(IntPtr gapiObject)
-		{	
-			unmanagedGapiObject = gapiObject;
-			
-		}
+        protected override void DestroyGapiObject(IntPtr gapiObject)
+        {
+            CheckResult(GdApi.CGapiRGBASurface_Destroy(Handle));
+        }
+
+        #region CreateSurface
+
+        /// <summary>
+        /// Allocates memory for a surface of the given size and prepares it for graphic operations.
+        /// </summary>
+        public void CreateSurface(int width, int height)
+        {
+            CreateSurface(0, width, height);
+        }
+
+        /// <summary>
+        /// Allocates memory for a surface of the given size and prepares it for graphic operations.
+        /// </summary>
+        public void CreateSurface(RgbaSurfaceOptions options, int width, int height)
+        {
+            CheckResult(GdApi.CGapiRGBASurface_CreateSurface(Handle, options, (uint)width, (uint)height));
+        }
+
+        /// <summary>
+        /// Creates the surface from the contents of the given file.
+        /// </summary>
+        public void CreateSurface(string fileName)
+        {
+            CreateSurface(fileName, 0);
+        }
+
+        /// <summary>
+        /// Creates the surface from the contents of the given file.
+        /// </summary>
+        public void CreateSurface(string fileName, RgbaSurfaceOptions options)
+        {
+            CheckResult(GdApi.CGapiRGBASurface_CreateSurfaceFromFile(Handle, options, Str(fileName)));
+        }
+
+        /// <summary>
+        /// Creates the surface from the contents of the given byte array.
+        /// </summary>
+        public void CreateSurface(byte[] imageBytes)
+        {
+            CreateSurface(imageBytes, imageBytes.Length, 0);
+        }
+
+        /// <summary>
+        /// Creates the surface from the contents of the given byte array.
+        /// </summary>
+        public void CreateSurface(byte[] imageBytes, int length, RgbaSurfaceOptions options)
+        {
+            CheckResult(GdApi.CGapiRGBASurface_CreateSurfaceFromMem(Handle,
+                options, imageBytes, (uint)length));
+        }
+
+        /// <summary>
+        /// Creates the surface from the given ID of a Win32 bitmap resource.
+        /// </summary>
+        public void CreateSurface(IntPtr hInstance, RgbaSurfaceOptions options,
+            int resourceID, string resourceType)
+        {
+            CheckResult(GdApi.CGapiRGBASurface_CreateSurfaceFromRes(Handle,
+                options, hInstance, (uint)resourceID, Str(resourceType)));
+        }
+
+        /// <summary>
+        /// Creates the surface by copying an existing surface.
+        /// </summary>
+        public void CreateSurface(GapiSurface sourceSurface)
+        {
+            CheckResult(GdApi.CGapiRGBASurface_CreateSurfaceFromSurface(Handle, sourceSurface.Handle));
+        }
+
+        #endregion
+
+        #region Size Metrics
+
+        public int Width
+        {
+            get { return (int)GdApi.CGapiRGBASurface_GetWidth(Handle); }
+        }
+
+        public int Height
+        {
+            get { return (int)GdApi.CGapiRGBASurface_GetHeight(Handle); }
+        }
 
         /// <summary>
         /// Gets the size of this surface.
         /// </summary>
         public Size Size
         {
-            // Create on-demand and cache forever when it's nonzero, since surface sizes can't change
-            get { return size != Size.Empty ? size : (size = new Size(GetWidth(), GetHeight())); }
+            get { return new Size(Width, Height); }
         }
 
+        /// <summary>
+        /// Gets the effective bounding Rectangle for this surface, always located at 0,0.
+        /// </summary>
         public Rectangle Bounds
         {
             get { return new Rectangle(0, 0, Width, Height); }
         }
 
-		virtual public void Dispose()
-		{
-			OwnsGapiObject = false;
-			GdApi.CGapiRGBASurface_Destroy(unmanagedGapiObject);
-		}
+        #endregion
 
-		public UInt32 CreateSurface(string fileName)
-		{
-			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurfaceFromFile(unmanagedGapiObject, 0, fileName);
+        #region Buffer Access
 
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
+        /// <summary>
+        /// Obtains a pointer to the internal memory buffer used by this surface.
+        /// </summary>
+        public GDBUFFERDESC GetBuffer()
+        {
+            GDBUFFERDESC buffer;
+            CheckResult(GdApi.CGapiRGBASurface_GetBuffer(Handle, out buffer));
+            return buffer;
+        }
 
-			return hResult;
-		}
+        /// <summary>
+        /// Releases the previously locked internal memory buffer used by this surface.
+        /// </summary>
+        public void ReleaseBuffer()
+        {
+            CheckResult(GdApi.CGapiRGBASurface_ReleaseBuffer());
+        }
 
-		public UInt32 CreateSurface(GapiRGBASurface srcSurface)
-		{
-			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurfaceFromSurface(unmanagedGapiObject, srcSurface.unmanagedGapiObject);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
-		}
-
-		public UInt32 CreateSurface(CreateSurfaceOptions dwFlags, string fileName)
-		{
-			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurfaceFromFile(unmanagedGapiObject, (int)dwFlags, fileName);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
-		}
-		
-		public UInt32 CreateSurface(byte[] imageBytes, CreateSurfaceOptions dwFlags)
-		{
-			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurfaceFromMem (unmanagedGapiObject, (int)dwFlags, imageBytes, imageBytes.Length);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
-		}
-		//		public UInt32 CreateSurfaceFromMem (IntPtr pSurface, ref byte pImageFileMem, int dwImageFileSize);
-		//		public UInt32 CreateSurfaceFromRes (IntPtr pSurface, IntPtr hInstance, int dwResourceID, string pResourceType);
-
-		public UInt32 CreateSurface(IntPtr hInstance, CreateSurfaceOptions dwFlags, int dwResourceID, string pResourceType)
-		{
-			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurfaceFromRes(unmanagedGapiObject, (int)dwFlags, hInstance, dwResourceID, pResourceType);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
-		}
-
-		//		public UInt32 CreateSurfaceOfSize (IntPtr pSurface, int dwFlags, int dwWidth, int dwHeight);
-		public void CreateSurface(CreateSurfaceOptions dwFlags, int dwWidth, int dwHeight)
-		{
-			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurface(unmanagedGapiObject, (int)dwFlags, dwWidth, dwHeight);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-		}
-
-		public void CreateSurface(int dwWidth, int dwHeight)
-		{
-			// public UInt32 CreateSurfaceFromFile (IntPtr pSurface, ref char pImageFile);
-			UInt32 hResult = GdApi.CGapiRGBASurface_CreateSurface(unmanagedGapiObject, 0, dwWidth, dwHeight);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-		}
-		public int GetWidth()
-		{
-			return GdApi.CGapiRGBASurface_GetWidth(unmanagedGapiObject);
-		}
-
-		public int Width
-		{
-            get { return Size.Width; }
-		}
-
-		public int GetHeight()
-		{
-			return GdApi.CGapiRGBASurface_GetHeight(unmanagedGapiObject);
-		}
-
-		public int Height
-		{
-            get { return Size.Height; }
-		}				
-		
-		//		public UInt32 CGapiRGBASurface_GetBuffer (IntPtr pSurface, ref GDBUFFERDESC pGDBufferDesc);
-		public void GetBuffer(ref GDBUFFERDESC pGDBufferDesc)
-		{
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiRGBASurface_GetBuffer(unmanagedGapiObject, ref pGDBufferDesc));
-		}
-
-		
-		//		public UInt32 CGapiRGBASurface_ReleaseBuffer (IntPtr pSurface);
-		public void ReleaseBuffer(IntPtr hDC)
-		{
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiRGBASurface_ReleaseBuffer(unmanagedGapiObject));
-		}
-	}
+        #endregion
+    }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Drawing;
 
 namespace GapiDrawNet
 {
@@ -46,34 +47,20 @@ namespace GapiDrawNet
         public void OpenDisplay(OpenDisplayOptions flags, IntPtr hWnd,
             int width, int height, int zoomWidth, int zoomHeight, int bpp, int hz)
 		{
-            CheckResult(GdApi.CGapiDisplay_OpenDisplay(Handle, flags, hWnd, width, height,
-                zoomWidth, zoomHeight, bpp, hz));
+            CheckResult(GdApi.CGapiDisplay_OpenDisplay(Handle, flags, hWnd, (uint)width, (uint)height,
+                (uint)zoomWidth, (uint)zoomHeight, (uint)bpp, (uint)hz));
+        }
+
+        /// <summary>
+        /// Creates a HDC compatible back buffer for blitting to a window.
+        /// </summary>
+        public void CreateOffscreenDisplay(int width, int height)
+        {
+            // The "flags" in this function are "Reserved for future use - set to zero" according to docs
+            CheckResult(GdApi.CGapiDisplay_CreateOffscreenDisplay(Handle, 0, (uint)width, (uint)height));
         }
 
         #endregion
-
-        // public static extern UInt32 CGapiDisplay_CreateOffscreenDisplay(IntPtr pDisplay, int dwFlags, int dwWidth, int dwHeight);
-		public void CreateOffscreenDisplay(GapiDrawNet.OpenDisplayOptions flags, int dwWidth, int dwHeight)
-		{
-			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_CreateOffscreenDisplay(Handle, (int)flags, dwWidth, dwHeight));
-		}
-
-		// public static extern UInt32 CGapiDisplay_OpenDisplayByName(IntPtr pDisplay, string pWindow, int dwFlags, int dwWidth, int dwHeight, int dwZoomWidth, int dwZoomHeight, int dwBPP, int dwHz);
-		public void OpenDisplay(string windowName, GapiDrawNet.OpenDisplayOptions flags, int dwWidth, int dwHeight, int dwZoomWidth, int dwZoomHeight, int dwBPP, int dwHz)
-		{
-			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_OpenDisplayByName(Handle, (int)flags, windowName, dwWidth,dwHeight, dwZoomWidth, dwZoomHeight, dwBPP, dwHz));
-		}
-
-		public void OpenDisplay(string windowName, GapiDrawNet.OpenDisplayOptions flags)
-		{
-			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_OpenDisplayByName(Handle, (int)flags, windowName, 240,320, 0, 0, 16, 0));
-
-		}
-
-		public void OpenDisplay(string windowName)
-		{
-			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_OpenDisplayByName(Handle, 0, windowName, 240,320, 0, 0, 16, 0));
-        }
 
         #region CloseDisplay
 
@@ -87,7 +74,7 @@ namespace GapiDrawNet
         #region DisplayMode
 
         public DisplayMode DisplayMode
-		{
+        {
             get
             {
                 DisplayMode mode;
@@ -101,6 +88,57 @@ namespace GapiDrawNet
         }
 
         #endregion
+
+        /// <summary>
+        /// Draws display information to a surface that can help developers work around device issues.
+        /// </summary>
+        /// <param name="destinationSurface">Surface upon which CGapiDisplay will output debug information.</param>
+        /// <param name="font">The font used to draw the text. If set to NULL, CGapiDisplay will use the default system font stored in system memory.</param>
+        public void DrawDisplayInformation(GapiSurface destinationSurface, GapiBitmapFont font)
+        {
+            CheckResult(GdApi.CGapiDisplay_DrawDisplayInformation(Handle, 
+                destinationSurface.Handle, font != null ? font.Handle : IntPtr.Zero));
+        }
+
+        /// <summary>
+        /// This method re-renders the system font in a user-specified color.
+        /// </summary>
+        /// <remarks>
+        /// The system font can be of a user-specified color and with an optional black border. If you need another border color, or in other ways need to modify this font, it is delivered in a bitmap format with the GapiDraw distribution.
+        /// </remarks>
+        public void RenderSystemFont(Color color)
+        {
+            CheckResult(GdApi.CGapiDisplay_RenderSystemFont(Handle, color.ToColorRef()));
+        }
+
+        /// <summary>
+        /// Gets a temporary pointer to the built-in system font.
+        /// </summary>
+        public GapiBitmapFont SystemFont
+        {
+            get
+            {
+                IntPtr systemFont = GdApi.CGapiDisplay_GetSystemFont(Handle);
+                return systemFont != IntPtr.Zero ? new GapiBitmapFont(systemFont, false) : null;
+            }
+        }
+
+        /// <summary>
+        /// Gets a temporary pointer to the built-in system font with border.
+        /// </summary>
+        public GapiBitmapFont SystemFontBorder
+        {
+            get
+            {
+                IntPtr systemFont = GdApi.CGapiDisplay_GetSystemFontBorder(Handle);
+                return systemFont != IntPtr.Zero ? new GapiBitmapFont(systemFont, false) : null;
+            }
+        }
+
+        // Everything below is from the older Intuitex package, needs to be cleaned up to match above
+
+
+
 
         //		public static extern UInt32 CGapiDisplay_GetDisplayCaps (IntPtr pDisplay, ref int pCaps);
 //		public DisplayCaps GetDisplayCaps()
@@ -160,116 +198,5 @@ namespace GapiDrawNet
 		{
 			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_DeviceToLogicalPoint(Handle, ref pPoint));
 		}
-
-		static public IntPtr SystemFontPtr = IntPtr.Zero;
-
-		public int RenderSystemFont(int dwColor)
-		{
-			int result = (int)GdApi.CGapiDisplay_RenderSystemFont(Handle, dwColor);
-			SystemFontPtr = GetSystemFontPtr();
-			return result;
-		}
-
-
-		//		public static extern UInt32 CGapiSurface_DrawTextSystemFont(IntPtr pSurface, int dwX, int dwY, string pString, int dwTextFlags, ref int pWidth);
-		public int GetTextWidth(string drawString)
-		{
-			int result;
-			GdApi.CGapiBitmapFont_GetStringWidth (GetSystemFontPtr(), drawString, out result);
-			return result;
-		}
-		
-		public IntPtr GetSystemFontPtr()
-		{
-			return GdApi.CGapiDisplay_GetSystemFont (Handle);
-		}
-
-		public IntPtr GetSystemFontBorderPtr()
-		{
-			return GdApi.CGapiDisplay_GetSystemFontBorder(Handle);
-		}
-
-		public void DrawOntoDcXp(IntPtr hdc, int x, int y)		
-		{
-//			IntPtr hdcSurf = BackBuffer.GetDC();
-//
-//			GdNet.BitBltXp(hdc, x, y, Width, Height, hdcSurf, 0, 0, 0x00CC0020);
-//			    
-//			BackBuffer.ReleaseDC(hdcSurf);
-			IntPtr hdcSurf = BackBuffer.GetDC();
-
-			if(hdcSurf != IntPtr.Zero)
-			{
-				try
-				{
-					GdApi.BitBltXp(hdc, x, y, Width, Height, hdcSurf, 0, 0, 0x00CC0020);
-				}
-				finally
-				{
-					BackBuffer.ReleaseDC(hdcSurf);
-				}
-			}   				
-		}
-
-		public void DrawOntoDcPpp(IntPtr hdc, int x, int y)		
-		{
-			IntPtr hdcSurf = BackBuffer.GetDC();
-
-			if(hdcSurf != IntPtr.Zero && hdc  != IntPtr.Zero)
-			{
-				try
-				{
-					GdApi.BitBltPpp(hdc, x, y, Width, Height, hdcSurf, 0, 0, 0x00CC0020);
-				}
-				finally
-				{
-					BackBuffer.ReleaseDC(hdcSurf);
-				}
-			}   						
-		}
-//		public void DrawOntoControl(Control control, int x, int y)
-//		{
-//			IntPtr hdcSurf = BackBuffer.GetDC();
-////			Graphics surf = Graphics.FromHdc(handle);
-//			using (Graphics g = this.CreateGraphics())
-//			{
-//				IntPtr hdc = g.GetHdc();
-//				try
-//				{
-//					
-//					BitBlt(hdc, 0, 0, Width, Height, hdcSurf, 0, 0, 0x00CC0020);
-//				}
-//				finally
-//				{
-//					g.ReleaseHdc(hdc);
-//				}
-//            	
-//			}
-//			BackBuffer.ReleaseDC(hdcSurf);
-//		}
-
-//		public int DrawText(int dwX, int dwY, string drawString, DrawTextOptions dwFlags)
-//		{
-//			int result;
-//			/// TODO : Fix add overloads!
-//			if(SystemFontPtr == IntPtr.Zero)
-//			{
-//				return (int)GapiResults.GDERR_INVALIDPARAMS;
-//			}
-//
-//			result = (int)GdNet.CGapiSurface_DrawText(unmanagedGapiObject, dwX, dwY, drawString, GetSystemFontPtr(), (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);			
-//			return result; //result;
-//		}
-
-//		public int DrawText(int dwX, int dwY, string drawString, int dwColor, DrawTextOptions dwFlags)
-//		{
-//			int result;
-//			/// TODO : Fix
-//
-//			//public static extern UInt32 CGapiSurface_DrawTextSystemFont(IntPtr pSurface, int dwX, int dwY, string pString, int dwTextFlags, out int pWidth);
-//			// GdNet.CGapiSurface_DrawTextSystemFont(unmanagedGapiObject, dwX, dwY, drawString, (int)dwFlags, out result);
-//			result = (int)GdNet.CGapiSurface_DrawText(unmanagedGapiObject, dwX, dwY, drawString, GetSystemFontPtr(), (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);			}
-//			return result;
-//		}
 	}
 }
