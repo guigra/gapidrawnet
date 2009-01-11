@@ -29,12 +29,12 @@ namespace GapiDrawNet
         }
 
 		// public static extern UInt32 CGapiBitmapFont_CreateFont (IntPtr pBitmapFont, int dwFlags, ref GDFONTFX pGDFontFx);
-		public void CreateFont(CreateFontOptions dwFlags, GDFONTFX gdFontFx)
+		public void CreateFont(CreateFontOptions dwFlags, FontFX gdFontFx)
 		{
 			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_CreateFont_NoString(Handle, 0, GetPixel(0, 0), (int)dwFlags, ref gdFontFx));
 		}
 
-		public void CreateFont(string pString, int dwColorkey, CreateFontOptions dwFlags, GDFONTFX gdFontFx)
+		public void CreateFont(string pString, int dwColorkey, CreateFontOptions dwFlags, FontFX gdFontFx)
 		{
 			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_CreateFont(Handle, Str(pString), dwColorkey, (int)dwFlags, ref gdFontFx));
 		}
@@ -50,9 +50,9 @@ namespace GapiDrawNet
 			//			Call CGapiBitmapFont::SetColorKey to specify the color key of your font bitmap. 
 			SetColorKeyFromBottomLeftCorner();
 			//			Call CGapiBitmapFont::CreateFont to calculate the font offsets and widths. 
-			GDFONTFX gdFontFx;
-			gdFontFx.lTracking = 0;
-			CreateFont(CreateFontOptions.GDCREATEFONT_SIMPLEBITMAP, gdFontFx);
+			FontFX gdFontFx;
+			gdFontFx.Tracking = 0;
+			CreateFont(CreateFontOptions.SimpleBitmap, gdFontFx);
 		}
 
 		public void CreateFontAdvanced(string bitmapFilename)
@@ -64,8 +64,8 @@ namespace GapiDrawNet
 			SetColorKeyFromBottomLeftCorner();
 
 			//			Call CGapiBitmapFont::CreateFont to calculate the font offsets and widths. 
-			GDFONTFX gdFontFx;
-			gdFontFx.lTracking = 0;
+			FontFX gdFontFx;
+			gdFontFx.Tracking = 0;
 			CreateFont(0, gdFontFx);
 		}
 

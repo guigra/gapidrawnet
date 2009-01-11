@@ -117,33 +117,33 @@ namespace GapiDrawNet
         [DllImport(GapiDraw)]
         public unsafe static extern uint CGapiSurface_Blt(IntPtr pSurface,
             GDRect* pDestRect, IntPtr pSrcSurface, GDRect* pSrcRect,
-            BltOptions dwFlags, GDBLTFX* pGDBltFx);
+            BltOptions dwFlags, BltFX* pGDBltFx);
 
         [DllImport(GapiDraw)]
         public unsafe static extern uint CGapiSurface_BltFast(IntPtr pSurface,
             int destX, int destY, IntPtr pSrcSurface, GDRect* pSrcRect,
-            BltFastOptions dwFlags, GDBLTFASTFX* pGDBltFastFx);
+            BltFastOptions dwFlags, BltFastFX* pGDBltFastFx);
 
         [DllImport(GapiDraw)]
         public unsafe static extern uint CGapiSurface_AlphaBltFast(IntPtr pSurface,
             int destX, int destY, IntPtr pSrcSurface, GDRect* pSrcRect,
             IntPtr pAlphaSurface, GDRect* pAlphaRect,
-            AlphaBltFastOptions dwFlags, GDALPHABLTFASTFX* pGDABltFastFx);
+            AlphaBltFastOptions dwFlags, AlphaBltFastFX* pGDABltFastFx);
 
         [DllImport(GapiDraw)]
         public unsafe static extern uint CGapiSurface_AlphaBltFastRgba(IntPtr pSurface,
             int destX, int destY, IntPtr pSrcSurface, GDRect* pSrcRect,
-            AlphaBltFastOptions dwFlags, GDALPHABLTFASTFX* pGDABltFastFx);
+            AlphaBltFastOptions dwFlags, AlphaBltFastFX* pGDABltFastFx);
 
         [DllImport(GapiDraw)]
         public unsafe static extern uint CGapiSurface_DrawLine(IntPtr pSurface,
             int x1, int y1, int x2, int y2, uint dwColor,
-            DrawLineOptions dwFlags, GDLINEFX* pGDLineFx);
+            DrawLineOptions dwFlags, LineFX* pGDLineFx);
 
         [DllImport(GapiDraw)]
         public unsafe static extern uint CGapiSurface_FillRect(IntPtr pSurface,
             GDRect* pRect, uint dwColor,
-            FillRectOptions dwFlags, GDFILLRECTFX* pGDFillRectFx);
+            FillRectOptions dwFlags, FillRectFX* pGDFillRectFx);
 
         #endregion
 
@@ -189,7 +189,7 @@ namespace GapiDrawNet
 
         [DllImport(GapiDraw)]
         public static extern uint CGapiRGBASurface_GetBuffer(IntPtr pSurface,
-            out GDBUFFERDESC pGDBufferDesc);
+            out BufferInfo pGDBufferDesc);
 
         [DllImport(GapiDraw)]
         public static extern uint CGapiRGBASurface_ReleaseBuffer();
@@ -265,7 +265,7 @@ namespace GapiDrawNet
 
 //		public static extern UInt32 CGapiSurface_GetBuffer(IntPtr pSurface, ref GDBUFFERDESC pGDBufferDesc);
 		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_GetBuffer(IntPtr pSurface, out GDBUFFERDESC pGDBufferDesc);
+		public static extern UInt32 CGapiSurface_GetBuffer(IntPtr pSurface, out BufferInfo pGDBufferDesc);
 
 
 //		public static extern UInt32 CGapiSurface_ReleaseBuffer(IntPtr pSurface);
@@ -282,9 +282,9 @@ namespace GapiDrawNet
 		public static extern UInt32 CGapiSurface_SaveSurface(IntPtr pSurface, byte[] pBitmapFile, int dwFlags);
 
 
-//		public static extern UInt32 CGapiSurface_GetSurfaceOptions(IntPtr pSurface, out int pOptions);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_GetSurfaceFlags(IntPtr pSurface, out int pFlags);
+		[DllImport(GapiDraw)]
+		public static extern uint CGapiSurface_GetSurfaceFlags(IntPtr pSurface, 
+            out CreateSurfaceOptions pFlags);
 
 
 //		public static extern UInt32 CGapiSurface_SetSurfaceOptions(IntPtr pSurface, int dwOptions);
@@ -297,14 +297,14 @@ namespace GapiDrawNet
 
 //		public static extern UInt32 CGapiSurface_AlphaBlt(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref GDALPHABLTFX pGDAlphaBltFx);
 		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_AlphaBlt(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref GDALPHABLTFX pGDAlphaBltFx);
+		public static extern UInt32 CGapiSurface_AlphaBlt(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref AlphaBltFX pGDAlphaBltFx);
 
 //		[DllImport("GdNet104.DLL", EntryPoint = "CGapiSurface_AlphaBlt")]
 		[DllImport("GapiDraw.dll", EntryPoint = "CGapiSurface_AlphaBlt")]
-		unsafe public static extern UInt32 CGapiSurface_AlphaBltNoRect(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, GDRect* pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, GDALPHABLTFX* pGDAlphaBltFx);
+		unsafe public static extern UInt32 CGapiSurface_AlphaBltNoRect(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, GDRect* pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, AlphaBltFX* pGDAlphaBltFx);
 
 		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_AlphaBltRgba(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, int dwFlags, ref GDALPHABLTFX pGDAlphaBltFx);
+		public static extern UInt32 CGapiSurface_AlphaBltRgba(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, int dwFlags, ref AlphaBltFX pGDAlphaBltFx);
 
 
 //		public static extern UInt32 CGapiSurface_GetPixel(IntPtr pSurface, int dwX, int dwY, out int pColor);
@@ -319,22 +319,22 @@ namespace GapiDrawNet
 
 //		public static extern UInt32 CGapiSurface_SetPixelsArray(IntPtr pSurface, ref GDPIXEL pFirst, int dwElementSize, int dwElementCount, int dwFlags);
 		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_SetPixelsArray(IntPtr pSurface, ref GDPIXEL pFirst, int dwElementSize, int dwElementCount, int dwFlags);
+		public static extern UInt32 CGapiSurface_SetPixelsArray(IntPtr pSurface, ref Pixel pFirst, int dwElementSize, int dwElementCount, int dwFlags);
 
 
 //		public static extern UInt32 CGapiSurface_SetPixelsList(IntPtr pSurface, ref GDPIXELNODE pHead, int dwFlags);
 		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_SetPixelsList(IntPtr pSurface, ref GDPIXELNODE pHead, int dwFlags);
+		public static extern UInt32 CGapiSurface_SetPixelsList(IntPtr pSurface, ref PixelNode pHead, int dwFlags);
 
 
 //		public static extern UInt32 CGapiSurface_DrawRect(IntPtr pSurface, ref GDRect pRect, int dwColor, int dwFlags, ref GDLINEFX pGDLineFx);
 		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_DrawRect(IntPtr pSurface, ref GDRect pRect, int dwColor, int dwFlags, ref GDLINEFX pGDLineFx);
+		public static extern UInt32 CGapiSurface_DrawRect(IntPtr pSurface, ref GDRect pRect, int dwColor, int dwFlags, ref LineFX pGDLineFx);
 
 //		[DllImport("GdNet104.DLL", EntryPoint = "CGapiSurface_DrawRect")]
 //		unsafe public static extern UInt32 CGapiSurface_DrawRectNoOptions(IntPtr pSurface, ref GDRect pRect, int dwColor, int dwFlags, GDLINEFX *pGDLineFx);
 		[DllImport("GapiDraw.dll", EntryPoint = "CGapiSurface_DrawRect")]
-		unsafe public static extern UInt32 CGapiSurface_DrawRectNoOptions(IntPtr pSurface, ref GDRect pRect, int dwColor, int dwFlags, GDLINEFX *pGDLineFx);
+		unsafe public static extern UInt32 CGapiSurface_DrawRectNoOptions(IntPtr pSurface, ref GDRect pRect, int dwColor, int dwFlags, LineFX *pGDLineFx);
 		
 //		[DllImport("GapiDraw.dll")]
 //		public static extern UInt32 CGapiSurface_RenderSystemFont(int dwColor);
@@ -417,10 +417,10 @@ namespace GapiDrawNet
 
 //		public static extern UInt32 CGapiBitmapFont_CreateFont(IntPtr pBitmapFont, int dwFlags, ref GDFONTFX pGDFontFx);
 		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiBitmapFont_CreateFont(IntPtr pBitmapFont, byte[] pString, int dwColorKey, int dwFlags, ref GDFONTFX pGDFontFx);
+		public static extern UInt32 CGapiBitmapFont_CreateFont(IntPtr pBitmapFont, byte[] pString, int dwColorKey, int dwFlags, ref FontFX pGDFontFx);
 
 		[DllImport("GapiDraw.dll", EntryPoint = "CGapiBitmapFont_CreateFont")]
-		public static extern UInt32 CGapiBitmapFont_CreateFont_NoString(IntPtr pBitmapFont, int GivemeZero, int dwColorKey, int dwFlags, ref GDFONTFX pGDFontFx);
+		public static extern UInt32 CGapiBitmapFont_CreateFont_NoString(IntPtr pBitmapFont, int GivemeZero, int dwColorKey, int dwFlags, ref FontFX pGDFontFx);
 
 
 //		public static extern UInt32 CGapiBitmapFont_SetKerning(IntPtr pBitmapFont, char tcPreviousChar, char tcCharToAdjust, int lOffset);
@@ -485,7 +485,7 @@ namespace GapiDrawNet
 
 //		public static extern UInt32 CGapiInput_GetKeyList(IntPtr pInput, ref GDKEYLIST pKeyList);
 		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiInput_GetKeyList(IntPtr pInput, ref GDKEYLIST pKeyList);
+		public static extern UInt32 CGapiInput_GetKeyList(IntPtr pInput, ref KeyList pKeyList);
 
 
 //		public static extern UInt32 CGapiInput_OpenInput(IntPtr pInput);

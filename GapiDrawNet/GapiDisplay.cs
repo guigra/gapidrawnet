@@ -151,7 +151,7 @@ namespace GapiDrawNet
 
 		public bool SurfacesAreLost()
 		{
-			return ((uint)GapiResults.GDERR_SURFACELOST) == GdApi.CGapiDisplay_SurfacesAreLost(Handle);
+			return ((uint)GapiResult.SurfaceLost) == GdApi.CGapiDisplay_SurfacesAreLost(Handle);
 		}
 
 		public void  RestoreAllVideoSurfaces()
@@ -164,7 +164,7 @@ namespace GapiDrawNet
 		{
 			uint hResult = GdApi.CGapiDisplay_Flip(Handle);
 
-			if(hResult == (uint)GapiResults.GD_OK){ return; }
+			if(hResult == (uint)GapiResult.Ok){ return; }
 			//if(hResult == (uint)GapiResults.GDERR_BACKBUFFERLOST)
 			if(SurfacesAreLost()) 
 			{
