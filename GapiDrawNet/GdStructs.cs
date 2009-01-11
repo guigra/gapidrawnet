@@ -10,9 +10,10 @@ namespace System.Drawing
             return (uint)(c.R + (c.G << 8) + (c.B << 16));
         }
 
-        public static Color ToColor(this int c)
+        public static Color ToColor(this uint c)
         {
-            return Color.FromArgb(c & 0x000000FF, (c & 0x0000FF00) >> 8, (c & 0x00FF0000) >> 16);
+            return Color.FromArgb(
+                (int)(c & 0x000000FF),(int)((c & 0x0000FF00) >> 8), (int)((c & 0x00FF0000) >> 16));
         }
 
         public static Color WithAlpha(this Color c, int alpha)
