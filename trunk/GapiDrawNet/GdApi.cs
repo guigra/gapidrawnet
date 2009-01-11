@@ -236,64 +236,42 @@ namespace GapiDrawNet
 
 ///    SAME AS IN GAPI 104
 
-//		public static extern UInt32 CGapiSurface_GetColorKey(IntPtr pSurface, out int pColorKey);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_GetColorKey(IntPtr pSurface, out int pColorKey);
 
-
-//		public static extern UInt32 CGapiSurface_SetColorKey(IntPtr pSurface, int dwColorKey);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_SetColorKey(IntPtr pSurface, int dwColorKey);
-
-
-
-//		public static extern UInt32 CGapiSurface_Lock(IntPtr pSurface, ref GDRect pRect, ref GDSURFACEDESC pGDSurfaceDesc);
-//
-
-//		public static extern UInt32 CGapiSurface_Unlock(IntPtr pSurface, ref GDRect pRect);
-//
-
-//		public static extern UInt32 CGapiSurface_GetDC(IntPtr pSurface, out IntPtr pDC);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_GetDC(IntPtr pSurface, out IntPtr pDC);
-
-
-//		public static extern UInt32 CGapiSurface_ReleaseDC(IntPtr pSurface, IntPtr hDC);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_ReleaseDC(IntPtr pSurface, IntPtr hDC);
-
-
-//		public static extern UInt32 CGapiSurface_GetBuffer(IntPtr pSurface, ref GDBUFFERDESC pGDBufferDesc);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_GetBuffer(IntPtr pSurface, out BufferInfo pGDBufferDesc);
-
-
-//		public static extern UInt32 CGapiSurface_ReleaseBuffer(IntPtr pSurface);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_ReleaseBuffer();
-
-		[DllImport("GapiDraw.dll")]
-		// HRESULT __stdcall CGapiSurface_GetClipper(CGapiSurface* pSurface, RECT* pRect);
-		public static extern UInt32 CGapiSurface_GetClipper(IntPtr pSurface, ref GDRect pRect);
-
-
-//		public static extern UInt32 CGapiSurface_SaveSurface(IntPtr pSurface, string pBitmapFile);
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_SaveSurface(IntPtr pSurface, byte[] pBitmapFile, int dwFlags);
-
+        [DllImport(GapiDraw)]
+		public static extern uint CGapiSurface_GetColorKey(IntPtr pSurface, out uint pColorKey);
 
 		[DllImport(GapiDraw)]
-		public static extern uint CGapiSurface_GetSurfaceFlags(IntPtr pSurface, 
-            out CreateSurfaceOptions pFlags);
+		public static extern uint CGapiSurface_SetColorKey(IntPtr pSurface, uint dwColorKey);
+
+		[DllImport(GapiDraw)]
+		public static extern uint CGapiSurface_GetDC(IntPtr pSurface, out IntPtr pDC);
+
+        [DllImport(GapiDraw)]
+		public static extern uint CGapiSurface_ReleaseDC(IntPtr pSurface, IntPtr hDC);
+
+		[DllImport(GapiDraw)]
+		public static extern uint CGapiSurface_GetBuffer(IntPtr pSurface, out BufferInfo pGDBufferDesc);
+
+        [DllImport(GapiDraw)]
+		public static extern uint CGapiSurface_ReleaseBuffer();
+
+        [DllImport(GapiDraw)]
+		public static extern uint CGapiSurface_GetClipper(IntPtr pSurface, out GDRect pRect);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiSurface_SaveSurface(IntPtr pSurface, 
+            byte[] pBitmapFile, SaveSurfaceOptions dwFlags);
+
+		[DllImport(GapiDraw)]
+		public static extern uint CGapiSurface_GetSurfaceFlags(IntPtr pSurface, out SurfaceOptions pFlags);
+
+		[DllImport(GapiDraw)]
+		public static extern uint CGapiSurface_LockVideoSurface(IntPtr pSurface);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiSurface_UnlockVideoSurface(IntPtr pSurface);
 
 
-//		public static extern UInt32 CGapiSurface_SetSurfaceOptions(IntPtr pSurface, int dwOptions);
-
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_LockVideoSurface(IntPtr pSurface);
-
-		[DllImport("GapiDraw.dll")]
-		public static extern UInt32 CGapiSurface_UnlockVideoSurface(IntPtr pSurface);
 
 //		public static extern UInt32 CGapiSurface_AlphaBlt(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref GDALPHABLTFX pGDAlphaBltFx);
 		[DllImport("GapiDraw.dll")]

@@ -38,36 +38,6 @@ namespace GapiDrawNet
 		{
 			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_CreateFont(Handle, Str(pString), dwColorkey, (int)dwFlags, ref gdFontFx));
 		}
-		public void CreateFont(string bitmapFilename)
-		{
-			CreateFontAdvanced(bitmapFilename);
-		}
-
-		public void CreateFontSimple(string bitmapFilename)
-		{
-			//			Call CGapiBitmapFont::CreateSurface and supply a valid font bitmap. 
-			CreateSurface(bitmapFilename);
-			//			Call CGapiBitmapFont::SetColorKey to specify the color key of your font bitmap. 
-			SetColorKeyFromBottomLeftCorner();
-			//			Call CGapiBitmapFont::CreateFont to calculate the font offsets and widths. 
-			FontFX gdFontFx;
-			gdFontFx.Tracking = 0;
-			CreateFont(CreateFontOptions.SimpleBitmap, gdFontFx);
-		}
-
-		public void CreateFontAdvanced(string bitmapFilename)
-		{
-			//			Call CGapiBitmapFont::CreateSurface and supply a valid font bitmap. 
-			CreateSurface(bitmapFilename);
-			//			Call CGapiBitmapFont::SetColorKey to specify the color key of your font bitmap. 
-			// get from bottom left corner
-			SetColorKeyFromBottomLeftCorner();
-
-			//			Call CGapiBitmapFont::CreateFont to calculate the font offsets and widths. 
-			FontFX gdFontFx;
-			gdFontFx.Tracking = 0;
-			CreateFont(0, gdFontFx);
-		}
 
 		// public static extern UInt32 CGapiBitmapFont_SetKerning (IntPtr pBitmapFont, char tcPreviousChar, char tcCharToAdjust, int lOffset);
 		public void SetKerning(char tcPreviousChar, char tcCharToAdjust, int lOffset)

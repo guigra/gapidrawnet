@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace GapiDrawNet
 {
 	/// <summary>
-    /// CGapiSurface is a memory area to which you can draw images and primitives.
+    /// GapiSurface is a memory area to which you can draw images and primitives.
 	/// </summary>
 	public class GapiSurface : GapiObjectRef
 	{
@@ -123,7 +123,6 @@ namespace GapiDrawNet
         /// </summary>
         public void CreateSurface(int width, int height, CreateSurfaceOptions options)
         {
-            CheckCreateSurfaceOptions(options);
             CheckResult(GdApi.CGapiSurface_CreateSurface(Handle, options, (uint)width, (uint)height));
         }
 
@@ -140,7 +139,6 @@ namespace GapiDrawNet
         /// </summary>
         public void CreateSurface(string fileName, CreateSurfaceOptions options)
         {
-            CheckCreateSurfaceOptions(options);
             CheckResult(GdApi.CGapiSurface_CreateSurfaceFromFile(Handle, options, Str(fileName)));
         }
 
@@ -165,7 +163,6 @@ namespace GapiDrawNet
         /// </summary>
         public void CreateSurface(byte[] imageBytes, int length, CreateSurfaceOptions options)
         {
-            CheckCreateSurfaceOptions(options);
             CheckResult(GdApi.CGapiSurface_CreateSurfaceFromMem(Handle,
                 options, imageBytes, (uint)length));
         }
@@ -176,7 +173,6 @@ namespace GapiDrawNet
         public void CreateSurface(IntPtr hInstance, CreateSurfaceOptions options,
             int resourceID, string resourceType)
         {
-            CheckCreateSurfaceOptions(options);
             CheckResult(GdApi.CGapiSurface_CreateSurfaceFromRes(Handle,
                 options, hInstance, (uint)resourceID, Str(resourceType)));
         }
@@ -187,18 +183,6 @@ namespace GapiDrawNet
         public void CreateSurface(GapiSurface sourceSurface)
         {
             CheckResult(GdApi.CGapiSurface_CreateSurfaceFromSurface(Handle, sourceSurface.Handle));
-        }
-
-        void CheckCreateSurfaceOptions(CreateSurfaceOptions options)
-        {
-            var illegalForCreateSurface =
-                CreateSurfaceOptions.Locked |
-                CreateSurfaceOptions.VideoLocked |
-                CreateSurfaceOptions.Primary |
-                CreateSurfaceOptions.Gdi;
-
-            if ((options & illegalForCreateSurface) > 0)
-                throw new InvalidOperationException("The CreateSurfaceOptions 'Locked', 'VideoLocked', 'Primary', and 'Gdi' are not allowed when calling CreateSurface or constructing a new GapiSurface instance.");
         }
 
         #endregion
@@ -233,14 +217,24 @@ namespace GapiDrawNet
 
         #endregion
 
-        #region SetClipper
+        #region Clipper
+
+        /// <summary>
+        /// Gets the current clipping area.
+        /// </summary>
+        public Rectangle GetClipper()
+        {
+            GDRect rect;
+            CheckResult(GdApi.CGapiSurface_GetClipper(Handle, out rect));
+            return rect;
+        }
 
         /// <summary>
         /// Removes the clipping area entirely.
         /// </summary>
         public void ClearClipper()
         {
-            SetClipper(new GDRect(0, 0, 0, 0));
+            SetClipper(Rectangle.Empty);
         }
 
         /// <summary>
@@ -248,17 +242,16 @@ namespace GapiDrawNet
         /// </summary>
         public unsafe void SetClipper()
         {
-            CheckResult(GdApi.CGapiSurface_SetClipper(
-                Handle, null));
+            CheckResult(GdApi.CGapiSurface_SetClipper(Handle, null));
         }
 
         /// <summary>
         /// Clips to the given area of this surface.
         /// </summary>
-        public unsafe void SetClipper(GDRect clipRect)
+        public unsafe void SetClipper(Rectangle clipRect)
         {
-            CheckResult(GdApi.CGapiSurface_SetClipper(
-                Handle, &clipRect));
+            GDRect rect = clipRect;
+            CheckResult(GdApi.CGapiSurface_SetClipper(Handle, &rect));
         }
 
         #endregion
@@ -489,125 +482,110 @@ namespace GapiDrawNet
 
         #endregion
 
-        // Everything below is from the older Intuitex package, needs to be cleaned up to match above
+        /// <summary>
+        /// Gets or sets the color to treat as transparent in this surface.
+        /// </summary>
+        public Color ColorKey
+        {
+            get
+            {
+                uint colorKey;
+                CheckResult(GdApi.CGapiSurface_GetColorKey(Handle, out colorKey));
+                return colorKey.ToColor();
+            }
+            set
+            {
+                CheckResult(GdApi.CGapiSurface_SetColorKey(Handle, value.ToColorRef()));
+            }
+        }
 
+        /// <summary>
+        /// Creates a GDI-compatible handle of a device context for the surface.
+        /// </summary>
+        /// <returns></returns>
+        public IntPtr GetDC()
+        {
+            IntPtr result;
+            CheckResult(GdApi.CGapiSurface_GetDC(Handle, out result));
+            return result;
+        }
 
-        //		public UInt32 GetColorKey (IntPtr pSurface, ref int pColorKey);
-		public int GetColorKey()
-		{
-			int result;
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_GetColorKey(Handle, out result));
-			return result;
-		}
-		
-		//		public UInt32 SetColorKey (IntPtr pSurface, int dwColorKey);
-		public void SetColorKey(int dwColorKey)
-		{
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SetColorKey(Handle, dwColorKey));
-		}
+        /// <summary>
+        /// Releases the handle of a device context previously obtained by using the CGapiSurface::GetDC method.
+        /// </summary>
+        /// <param name="hDC"></param>
+        public void ReleaseDC(IntPtr hDC)
+        {
+            CheckResult(GdApi.CGapiSurface_ReleaseDC(Handle, hDC));
+        }
 
-		public int ColorKey
-		{
-			get { return GetColorKey(); }
-			set { SetColorKey(value); }
-		}
+        /// <summary>
+        /// This method obtains a pointer to the internal memory buffer used by this surface.
+        /// The surface will be locked for your exclusive access to the buffer until you call
+        /// ReleaseBuffer.
+        /// </summary>
+        public BufferInfo GetBuffer()
+        {
+            BufferInfo bufferInfo;
+            CheckResult(GdApi.CGapiSurface_GetBuffer(Handle, out bufferInfo));
+            return bufferInfo;
+        }
 
-		public void SetColorKeyFromBottomLeftCorner()
-		{
-			// get from bottom left corner
-			int height = Height;
-			int color  = GetPixel(0, height - 1);
-			SetColorKey(color);
-		}
+        /// <summary>
+        /// Releases the previously locked internal memory buffer used by this surface.
+        /// </summary>
+        public void ReleaseBuffer()
+        {
+            CheckResult(GdApi.CGapiSurface_ReleaseBuffer());
+        }
 
-		public void SetColorKeyFromTopLeftCorner()
-		{
-			SetColorKey(GetPixel(0, 0));
-		}
-		
-//		public UInt32 CGapiSurface_Lock(IntPtr pSurface, ref GDRect pRect, ref GDSURFACEDESC pGDSurfaceDesc);
+        /// <summary>
+        /// Locks the surface if it is stored in video memory.
+        /// </summary>
+        public void LockVideoSurface()
+        {
+            CheckResult(GdApi.CGapiSurface_LockVideoSurface(Handle));
+        }
 
-		
-//		public UInt32 CGapiSurface_Unlock(IntPtr pSurface, ref GDRect pRect);
+        /// <summary>
+        /// Unlocks the surface if it is stored in video memory.
+        /// </summary>
+        public void UnlockVideoSurface()
+        {
+            CheckResult(GdApi.CGapiSurface_UnlockVideoSurface(Handle));
+        }
 
-		
-//		public UInt32 CGapiSurface_GetDC(IntPtr pSurface, IntPtr pDC);
-		public IntPtr GetDC()
-		{
-			IntPtr result;
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_GetDC(Handle, out result));
-			return result;
-		}
+        /// <summary>
+        /// Saves the contents of the surface as a bitmap file.
+        /// </summary>
+        public void SaveSurface(string fileName)
+        {
+            CheckResult(GdApi.CGapiSurface_SaveSurface(Handle, Str(fileName), 0));
+        }
 
-		
-//		public UInt32 CGapiSurface_ReleaseDC(IntPtr pSurface, IntPtr hDC);
-		public void ReleaseDC(IntPtr hDC)
-		{
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_ReleaseDC(Handle, hDC));
-		}
-		
-//		public UInt32 CGapiSurface_GetBuffer (IntPtr pSurface, ref GDBUFFERDESC pGDBufferDesc);
-		public BufferInfo GetBuffer()
-		{
-			BufferInfo pGDBufferDesc;
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_GetBuffer(Handle, out pGDBufferDesc));
-			return pGDBufferDesc;
-		}
-
-		
-//		public UInt32 CGapiSurface_ReleaseBuffer (IntPtr pSurface);
-		public void ReleaseBuffer()
-		{
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_ReleaseBuffer());
-		}
-	
-		// TODO : TEST THESE
-		public UInt32 LockVideoSurface()
-		{
-			return GdApi.CGapiSurface_LockVideoSurface(Handle);
-		}
-
-		// TODO : TEST THESE
-		public UInt32 UnlockVideoSurface()
-		{
-			return GdApi.CGapiSurface_UnlockVideoSurface(Handle);
-		}
-
-//		public UInt32 CGapiSurface_SaveSurface (IntPtr pSurface, ref char pBitmapFile);
-		public void SaveSurface(string bitmapFilename, SaveSurfaceOptions options)
-		{
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SaveSurface(Handle, Str(bitmapFilename), (int)options));
-		}
-
-		public void SaveSurface(string bitmapFilename)
-		{
-			GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiSurface_SaveSurface(Handle, Str(bitmapFilename), (int)SaveSurfaceOptions.Bmp), bitmapFilename);
-		}
+        /// <summary>
+        /// Saves the contents of the surface as a bitmap file.
+        /// </summary>
+        public void SaveSurface(string fileName, SaveSurfaceOptions options)
+        {
+            CheckResult(GdApi.CGapiSurface_SaveSurface(Handle, Str(fileName), options));
+        }
 		
         /// <summary>
         /// Gets the current flags for this surface.
         /// </summary>
-        public CreateSurfaceOptions SurfaceOptions
+        public SurfaceOptions SurfaceOptions
 		{
             get
             {
-                CreateSurfaceOptions options;
+                SurfaceOptions options;
                 CheckResult(GdApi.CGapiSurface_GetSurfaceFlags(Handle, out options));
                 return options;
             }
 		}
-		
-//		public UInt32 CGapiSurface_SetSurfaceOptions (IntPtr pSurface, int dwOptions);
-//		public void SetSurfaceOptions(GapiSurfaceOptions options)
-//		{
-//			GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_SetSurfaceOptions(unmanagedGapiObject, (int)options));
-//		}
-		
-//		public GapiSurfaceOptions SurfaceOptions
-//		{
-//			get { return GetSurfaceOptions(); }
-//			set { SetSurfaceOptions(value); }
-//		}
+
+        // Everything below is from the older Intuitex package, needs to be cleaned up to match above
+
 
         //		public UInt32 CGapiSurface_AlphaBlt (IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref GDALPHABLTFX pGDAlphaBltFx);
 		public void AlphaBlt(ref GDRect pDestRect, GapiSurface srcSurface, ref GDRect pSrcRect, GapiSurface alphaSurface, ref GDRect alphaRect, AlphaBltOptions dwFlags, ref AlphaBltFX pGDAlphaBltFx)
@@ -695,11 +673,6 @@ namespace GapiDrawNet
 			return result;
 		}
 		
-		public void GetClipper(ref GDRect clipRect)
-		{
-			GdApi.CGapiSurface_GetClipper(Handle, ref clipRect);
-		}
-
 //		public void DrawText(int dwX, int dwY, string drawString, GapiBitmapFont font, DrawTextOptions dwFlags, GDTEXTFX gDTextFx)
 //		{
 //			int dummy;

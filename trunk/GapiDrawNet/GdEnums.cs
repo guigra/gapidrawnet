@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace GapiDrawNet
 {
@@ -39,6 +40,27 @@ namespace GapiDrawNet
         LocalVideoMemory = 0x0400,
         /// <summary>(Stationary PCs) The surface is stored in non local video memory</summary>
         NonLocalVideoMemory = 0x0800,
+	}
+
+    [Flags]
+    public enum SurfaceOptions : uint
+    {
+        // Surface flags used in CreateSurface
+
+        /// <summary>The surface is cleared after creation</summary>
+        Clear = 0x0001,
+        /// <summary>Use only alpha information when loading a transparent image</summary>
+        Alpha = 0x0002,
+        /// <summary>Coordinate verifications are disabled</summary>
+        NoCoordsCheck = 0x0004,
+        /// <summary>The surface is stored in system memory - default windowed</summary>
+        SystemMemory = 0x0100,
+        /// <summary>The surface is stored in video memory - default full screen</summary>
+        VideoMemory = 0x0200,
+        /// <summary>(Stationary PCs) The surface is stored in local video memory - default</summary>
+        LocalVideoMemory = 0x0400,
+        /// <summary>(Stationary PCs) The surface is stored in non local video memory</summary>
+        NonLocalVideoMemory = 0x0800,
 
         // Surface flags set internally by GapiDraw
 
@@ -50,7 +72,7 @@ namespace GapiDrawNet
         Primary = 0x4000,
         /// <summary>The surface is stored as a GDI bitmap</summary>
         Gdi = 0x8000
-	}
+    }
 
 	[Flags]
 	public enum RgbaSurfaceOptions : uint
@@ -318,7 +340,7 @@ namespace GapiDrawNet
     };
 
     /// <summary>
-    /// Surface description returned from GapiDisplay.GetBuffer
+    /// Surface description returned from GapiDisplay.GetBuffer.
     /// </summary>
     public struct BufferInfo
     {
@@ -331,14 +353,9 @@ namespace GapiDrawNet
         /// <summary>yPitch in bytes</summary>
         public int PitchY;
         /// <summary>Buffer pointer</summary>
-        public IntPtr BufferHandle;
+        public IntPtr BufferPointer;
         /// <summary>Pixel format - currently GDPIXELFORMAT_555 and GDPIXELFORMAT_565 are supported</summary>
         public uint PixelFormat;
-
-        /// <summary>
-        /// Gets the GapiSurface that represents our buffer.
-        /// </summary>
-        public GapiSurface Buffer { get { return new GapiSurface(BufferHandle, false); } }
     };
 
     /// <summary>
