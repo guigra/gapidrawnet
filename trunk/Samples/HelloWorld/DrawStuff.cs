@@ -1,4 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.IO;
+using System.Reflection;
 using GapiDrawNet;
 
 namespace HelloWorld
@@ -7,9 +10,14 @@ namespace HelloWorld
     {
         public static void Onto(GapiSurface gapiSurface, GapiBitmapFont font)
         {
-            gapiSurface.FillRect(Color.Red);
-            
-            gapiSurface.DrawText(10, 10, "Hello World!", font, 0);
+            // this works on both CE and the desktop
+            Uri assemblyPath = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase);
+            string assemblyDir = Path.GetDirectoryName(assemblyPath.LocalPath);
+            var redFade = new GapiRgbaSurface(Path.Combine(assemblyDir, "RedFade.png"));
+
+            gapiSurface.FillRect(Color.Gray);
+            gapiSurface.DrawText(10, 200, "Hello World!", font, 0);
+            gapiSurface.AlphaBltFast(0, 0, redFade);
         }
     }
 }

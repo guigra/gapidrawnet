@@ -30,16 +30,16 @@ namespace GapiDrawNet
 			// int hResult = CGapiTimer_StartTimer(unmanagedGapiObject, TargetFrameRate);
 		}
 
-		public GapiResults WaitForNextFrame()
+		public GapiResult WaitForNextFrame()
 		{
-			GapiResults hResult = (GapiResults)GdApi.CGapiTimer_WaitForNextFrame(unmanagedGapiObject);
+			GapiResult hResult = (GapiResult)GdApi.CGapiTimer_WaitForNextFrame(unmanagedGapiObject);
 
-			if(hResult != 0 && hResult != GapiResults.GDERR_FRAMETIMEOVERFLOW)
+			if(hResult != 0 && hResult != GapiResult.FrameTimeOverflow)
 			{
 				GapiErrorHelper.RaiseExceptionOnError((uint)hResult);
 			}
 			
-			return (GapiResults)hResult;
+			return (GapiResult)hResult;
 		}
 
 		public double GetActualFrameRate()

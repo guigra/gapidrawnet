@@ -33,7 +33,7 @@ namespace GapiDrawNet
 
 //		[DllImport("GdNet.DLL")]
 //		public static extern UInt32 CGapiInput_GetKeyList(IntPtr pInput, ref GDKEYLIST pKeyList);
-		public UInt32 GetKeyList(ref GDKEYLIST pKeyList)
+		public UInt32 GetKeyList(ref KeyList pKeyList)
 		{
 			UInt32 hResult = GdApi.CGapiInput_GetKeyList(unmanagedGapiObject, ref pKeyList);
 

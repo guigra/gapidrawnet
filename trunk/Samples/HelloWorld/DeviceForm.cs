@@ -2,9 +2,6 @@
 using System.Drawing;
 using System.Windows.Forms;
 using GapiDrawNet;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using System.Text;
 
 namespace HelloWorld
 {
@@ -29,7 +26,7 @@ namespace HelloWorld
 
             Display = new GapiDisplay();
             OpenDisplay();
-
+            
             // draw some stuff onto the BackBuffer
             DrawStuff.Onto(Display.BackBuffer, Display.SystemFont);
         }
@@ -42,7 +39,7 @@ namespace HelloWorld
 
         protected virtual void OpenDisplay()
         {
-            Display.OpenDisplay(OpenDisplayOptions.GDDISPLAY_FULLSCREEN, Handle, Width, Height);
+            Display.OpenDisplay(OpenDisplayOptions.FullScreen, Handle, Width, Height);
         }
 
         protected virtual void PaintBuffer(Graphics g)
