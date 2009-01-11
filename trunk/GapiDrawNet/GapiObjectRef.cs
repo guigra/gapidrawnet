@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace GapiDrawNet
 {
@@ -13,7 +14,7 @@ namespace GapiDrawNet
         protected GapiObjectRef(IntPtr handle)
             : this(handle, true) { }
 
-        protected GapiObjectRef(IntPtr handle, bool ownsHandle)
+        protected internal GapiObjectRef(IntPtr handle, bool ownsHandle)
         {
             if (handle == IntPtr.Zero)
                 throw new InvalidOperationException("Cannot create a GapiObjectBase against a NULL handle.");
@@ -63,5 +64,15 @@ namespace GapiDrawNet
         }
 
         protected abstract void DestroyGapiObject(IntPtr handle);
+
+        /// <summary>
+        /// Encodes a string for passing to the GapiDraw.dll library via DllImport. Normally
+        /// DllImport would handle this automatically, but it breaks in the case of when a program
+        /// running on the desktop uses this GapiDrawNet library which was compiled for .NET CF.
+        /// </summary>
+        protected byte[] Str(string s)
+        {
+            return Encoding.Unicode.GetBytes(s + '\0');
+        }
     }
 }

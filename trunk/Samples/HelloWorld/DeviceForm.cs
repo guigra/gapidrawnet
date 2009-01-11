@@ -2,6 +2,9 @@
 using System.Drawing;
 using System.Windows.Forms;
 using GapiDrawNet;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
+using System.Text;
 
 namespace HelloWorld
 {
@@ -28,7 +31,7 @@ namespace HelloWorld
             OpenDisplay();
 
             // draw some stuff onto the BackBuffer
-            DrawStuff.Onto(Display.BackBuffer);
+            DrawStuff.Onto(Display.BackBuffer, Display.SystemFont);
         }
 
         // Quit the app when you click anywhere
@@ -39,13 +42,28 @@ namespace HelloWorld
 
         protected virtual void OpenDisplay()
         {
-            Display.OpenDisplay(OpenDisplayOptions.GDDISPLAY_FULLSCREEN, Handle, Width, Height);
+            //Display.OpenDisplay(OpenDisplayOptions.GDDISPLAY_FULLSCREEN, Handle, Width, Height);
+            Display.CreateOffscreenDisplay(ClientSize.Width, ClientSize.Height);
         }
 
         protected virtual void PaintBuffer(Graphics g)
         {
-            Display.Flip();
+            //Display.Flip();
+
+            IntPtr hDC = g.GetHdc();
+            IntPtr hBufferDC = Display.BackBuffer.GetDC();
+
+            BitBlt(hDC, 0, 0, ClientSize.Width, ClientSize.Height, hBufferDC, 0, 0, SRCCOPY);
+
+            g.ReleaseHdc(hDC);
+            Display.BackBuffer.ReleaseDC(hBufferDC);
         }
+
+        const uint SRCCOPY = 0x00CC0020;
+
+        [DllImport("coredll.dll")]
+        static extern bool BitBlt(IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight,
+            IntPtr hdcSrc, int nXSrc, int nYSrc, uint dwRop);
 
         protected override void Dispose(bool disposing)
         {

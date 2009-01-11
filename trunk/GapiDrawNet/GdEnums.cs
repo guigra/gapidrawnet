@@ -30,7 +30,7 @@ namespace GapiDrawNet
 	}
 
 	[Flags]
-	public enum CreateSurfaceOptions
+	public enum CreateSurfaceOptions : uint
 	{
 		// Surface flags
 		GDSURFACE_CLEAR                = 0x0001, // The surface is cleared after creation
@@ -51,7 +51,7 @@ namespace GapiDrawNet
 	}
 
 	[Flags]
-	public enum RGBASurfaceFlags
+	public enum RgbaSurfaceOptions : uint
 	{
 		// RGBA Surface flags
 		GDRGBASURFACE_CLEAR            = 0x0001, // The surface is cleared after creation
@@ -60,7 +60,7 @@ namespace GapiDrawNet
 		GDRGBASURFACE_SYSTEMMEMORY     = 0x0100, // Create the surface in system memory (default)
 	}
 
-	public enum DisplayMode
+	public enum DisplayMode : uint
 	{
 		GDDISPMODE_NORMAL              = 0x0001, // Use normal display mode - default
 		GDDISPMODE_ROTATE90CCW         = 0x0002, // Rotate display 90 degrees counter clockwise
@@ -73,7 +73,7 @@ namespace GapiDrawNet
 //		GDDISPMODE_LANDSCAPE2          = 0x0003, // Rotate display 90 degrees clockwise
 	}
 
-	public enum PixelFormats
+	public enum PixelFormats : uint
 	{
 		GDPIXELFORMAT_444			   = 0x0001, // 16-bit RGB  (xxxxrrrr ggggbbbb)
 		GDPIXELFORMAT_555              = 0x0002, // 16-bit RGB  (xrrrrrgg gggbbbbb)
@@ -101,7 +101,7 @@ namespace GapiDrawNet
 //
 //	// Blt options
 	[Flags]
-	public enum BltOptions
+	public enum BltOptions : uint
 	{
 		// Blt options
 		GDBLT_KEYSRC                   = 0x0001, // Uses the color key in the source surface
@@ -122,7 +122,7 @@ namespace GapiDrawNet
 	}
 
 	[Flags]
-	public enum BltFastOptions
+	public enum BltFastOptions : uint
 	{	// BltFast options
 		GDBLTFAST_KEYSRC               = 0x0001, // Masks out the colors specified by KEYSRC before blitting
 		GDBLTFAST_COLORFILL            = 0x0002, // Uses the specified color instead of source image color (source image can be NULL)
@@ -136,7 +136,7 @@ namespace GapiDrawNet
 	}
 
 	[Flags]
-	public enum AlphaBltOptions
+	public enum AlphaBltOptions : uint
 	{	// AlphaBlt options
 		GDALPHABLT_OPACITY             = 0x0001, // Specifies opacity of the source image (0 transparent - 255 opaque)
 		GDALPHABLT_MIRRORLEFTRIGHT     = 0x0010, // Mirrors the source left-right
@@ -149,7 +149,7 @@ namespace GapiDrawNet
 	}
 
 	[Flags]
-	public enum AlphaBltFastOptions
+	public enum AlphaBltFastOptions : uint
 	{
 		// AlphaBltFast options
 		GDALPHABLTFAST_OPACITY         = 0x0001, // Specifies opacity of the source image (0 transparent - 255 opaque)
@@ -157,14 +157,14 @@ namespace GapiDrawNet
 
 	// Line options (DrawLine, DrawRect)
 	[Flags]
-	public enum DrawLineOptions
+	public enum DrawLineOptions : uint
 	{
 		GDDRAWLINE_OPACITY             = 0x0001, // Uses opacity to blend the lines with the background 
         GDDRAWLINE_ANTIALIAS           = 0x0002, // Uses a fast fixed point WU algorithm to smooth the line
     }
 
 	[Flags]
-	public enum SetPixelsOptions
+	public enum SetPixelsOptions : uint
 	{
 		// SetPixel options
 		GDPIXEL_OPACITY                = 0x0001, // Uses opacity to blend the pixel with the background 
@@ -173,7 +173,7 @@ namespace GapiDrawNet
 	}
 
 	[Flags]
-	public enum FillRectOptions
+	public enum FillRectOptions : uint
 	{
 		// FillRect options
 		GDFILLRECT_OPACITY             = 0x0001, // Specifies opacity of the GDRect (0 transparent - 255 opaque)
@@ -196,7 +196,7 @@ namespace GapiDrawNet
 //	}
 
 	[Flags]
-	public enum DrawTextOptions
+	public enum DrawTextOptions : uint
 	{
 		// Text attributes
 		GDDRAWTEXT_LEFT                = 0x0001, // Draw left-aligned text (dwX = text left, dwY = text top) - default mode
@@ -207,7 +207,7 @@ namespace GapiDrawNet
 	}
 
 	[Flags]
-	public enum CreateFontOptions
+	public enum CreateFontOptions : uint
 	{
 		// Bitmap font creation
 		GDCREATEFONT_TRACKING          = 0x0001, // Font tracking (space between characters) in pixels
@@ -215,7 +215,7 @@ namespace GapiDrawNet
 	}
 
 	[Flags]
-	public enum SaveSurfaceOptions
+	public enum SaveSurfaceOptions : uint
 	{
 		// Save Surface flags
 		GDSAVESURFACE_BMP              = 0x0001, // Save surface as 24-bit BMP image - default
@@ -223,7 +223,7 @@ namespace GapiDrawNet
 	}
 
 	[Flags]
-	public enum VideohardwareFlags
+	public enum VideohardwareFlags : uint
 	{
 		// Video hardware status
 		GDVIDEOHW_VIDMEM               = 0x0001, // Video memory is available and enabled
