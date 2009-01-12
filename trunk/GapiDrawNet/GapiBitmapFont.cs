@@ -1,5 +1,5 @@
 using System;
-using System.Runtime.InteropServices;
+using System.Drawing;
 
 namespace GapiDrawNet
 {
@@ -7,42 +7,80 @@ namespace GapiDrawNet
 	/// Summary description for GapiBitmapFont.
 	/// </summary>
 	public class GapiBitmapFont : GapiSurface
-	{
-//		[DllImport("GdNet.dll")]
-//		private static extern IntPtr CGapiBitmapFont_Create();
-//		// private static extern int CGdApplication_Create(ref IntPtr pApp, IntPtr hInst);
-//
-//		[DllImport("GdNet.dll")]
-//		private static extern int  CGapiBitmapFont_Destroy(IntPtr pApp);
+    {
+        /// <summary>
+        /// Creates a GapiBitmapFont which delegates for an exsiting surface handle.
+        /// </summary>
+        internal GapiBitmapFont(IntPtr handle) : base(handle) { }
 
-		public GapiBitmapFont()
-            : base(GdApi.CGapiBitmapFont_Create(), true)
-		{
-		}
+        #region Public Constructors
 
-        internal GapiBitmapFont(IntPtr handle, bool ownsHandle)
-            : base(handle, ownsHandle) { }
+        /// <summary>
+        /// Creates an empty GapiBitmapFont. You should call CreateSurface followed by CreateFont
+        /// to initialize this font.
+        /// </summary>
+        public GapiBitmapFont() { }
 
-        protected override void DestroyGapiObject(IntPtr gapiObject)
+        #endregion
+
+        protected override IntPtr CreateHandle()
         {
-            CheckResult(GdApi.CGapiBitmapFont_Destroy(Handle));
+            return GdApi.CGapiBitmapFont_Create();
         }
 
+        protected override GapiResult DestroyHandle()
+        {
+            return GdApi.CGapiBitmapFont_Destroy(Handle);
+        }
+
+        /// <summary>
+        /// Initializes this surface as a font.
+        /// </summary>
+        public unsafe void CreateFont(string charactersInFont, Color colorKey, bool simpleBitmap,
+            int? tracking)
+        {
+            FontFX fx;
+            FontFX* pFX = null;
+            CreateFontOptions options = 0;
+
+            if (tracking.HasValue || simpleBitmap)
+            {
+                fx = new FontFX();
+                pFX = &fx;
+
+                if (tracking.HasValue)
+                {
+                    options |= CreateFontOptions.Tracking;
+                    fx.Tracking = tracking.Value;
+                }
+
+                if (simpleBitmap)
+                    options |= CreateFontOptions.SimpleBitmap;
+            }
+
+            CheckResult(GdApi.CGapiBitmapFont_CreateFont(Handle,
+                Str(charactersInFont), colorKey.ToColorRef(), options, pFX));
+        }
+
+        // Everything below is from the older Intuitex package, needs to be cleaned up to match above
+
+
+
 		// public static extern UInt32 CGapiBitmapFont_CreateFont (IntPtr pBitmapFont, int dwFlags, ref GDFONTFX pGDFontFx);
-		public void CreateFont(CreateFontOptions dwFlags, FontFX gdFontFx)
+		/*public void CreateFont(CreateFontOptions dwFlags, FontFX gdFontFx)
 		{
-			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_CreateFont_NoString(Handle, 0, GetPixel(0, 0), (int)dwFlags, ref gdFontFx));
+			CheckResult (GdApi.CGapiBitmapFont_CreateFont_NoString(Handle, 0, GetPixel(0, 0), (int)dwFlags, ref gdFontFx));
 		}
 
 		public void CreateFont(string pString, int dwColorkey, CreateFontOptions dwFlags, FontFX gdFontFx)
 		{
-			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_CreateFont(Handle, Str(pString), dwColorkey, (int)dwFlags, ref gdFontFx));
-		}
+			CheckResult (GdApi.CGapiBitmapFont_CreateFont(Handle, Str(pString), dwColorkey, (int)dwFlags, ref gdFontFx));
+		}*/
 
 		// public static extern UInt32 CGapiBitmapFont_SetKerning (IntPtr pBitmapFont, char tcPreviousChar, char tcCharToAdjust, int lOffset);
 		public void SetKerning(char tcPreviousChar, char tcCharToAdjust, int lOffset)
 		{
-			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiBitmapFont_SetKerning(Handle, tcPreviousChar, tcCharToAdjust, lOffset));
+			CheckResult (GdApi.CGapiBitmapFont_SetKerning(Handle, tcPreviousChar, tcCharToAdjust, lOffset));
 		}
 
 		public int GetTextWidth(string drawString)

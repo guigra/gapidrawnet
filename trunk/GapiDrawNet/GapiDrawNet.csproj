@@ -80,7 +80,7 @@
     <Compile Include="GdStructs.cs" />
     <Compile Include="GapiSurface.cs" />
     <Compile Include="GapiTimer.cs" />
-    <Compile Include="GapiErrorHelper.cs" />
+    <Compile Include="GapiException.cs" />
     <Compile Include="GdApi.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />

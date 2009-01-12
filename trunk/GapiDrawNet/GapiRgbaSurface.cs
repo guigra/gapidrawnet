@@ -9,21 +9,12 @@ namespace GapiDrawNet
     /// </summary>
     public class GapiRgbaSurface : GapiObjectRef
     {
-        public GapiRgbaSurface()
-            : base(GdApi.CGapiRGBASurface_Create(GapiDraw.GlobalHandle))
-        {
-        }
-
-        internal GapiRgbaSurface(IntPtr handle, bool ownsHandle)
-            : base(handle, ownsHandle) { }
-
-        #region Convenience Constructors
+        #region Public Constructors
 
         /// <summary>
         /// Initializes the surface with the given size and prepares it for graphic operations.
         /// </summary>
         public GapiRgbaSurface(int width, int height)
-            : this()
         {
             CreateSurface(width, height);
         }
@@ -32,7 +23,6 @@ namespace GapiDrawNet
         /// Initializes the surface with the given size and prepares it for graphic operations.
         /// </summary>
         public GapiRgbaSurface(int width, int height, RgbaSurfaceOptions options)
-            : this()
         {
             CreateSurface(width, height, options);
         }
@@ -41,7 +31,6 @@ namespace GapiDrawNet
         /// Initializes the surface from the contents of the given file.
         /// </summary>
         public GapiRgbaSurface(string fileName)
-            : this()
         {
             CreateSurface(fileName);
         }
@@ -50,7 +39,6 @@ namespace GapiDrawNet
         /// Initializes the surface from the contents of the given file.
         /// </summary>
         public GapiRgbaSurface(string fileName, RgbaSurfaceOptions options)
-            : this()
         {
             CreateSurface(fileName, options);
         }
@@ -59,7 +47,6 @@ namespace GapiDrawNet
         /// Initializes the surface from the contents of the given byte array.
         /// </summary>
         public GapiRgbaSurface(byte[] imageBytes)
-            : this()
         {
             CreateSurface(imageBytes);
         }
@@ -68,7 +55,6 @@ namespace GapiDrawNet
         /// Initialized the surface from the contents of the given byte array.
         /// </summary>
         public GapiRgbaSurface(byte[] imageBytes, RgbaSurfaceOptions options)
-            : this()
         {
             CreateSurface(imageBytes, imageBytes.Length, options);
         }
@@ -77,7 +63,6 @@ namespace GapiDrawNet
         /// Initializes the surface from the contents of the given byte array.
         /// </summary>
         public GapiRgbaSurface(byte[] imageBytes, int length, RgbaSurfaceOptions options)
-            : this()
         {
             CreateSurface(imageBytes, length, options);
         }
@@ -87,7 +72,6 @@ namespace GapiDrawNet
         /// </summary>
         public GapiRgbaSurface(IntPtr hInstance, RgbaSurfaceOptions options,
             int resourceID, string resourceType)
-            : this()
         {
             CreateSurface(hInstance, options, resourceID, resourceType);
         }
@@ -96,16 +80,20 @@ namespace GapiDrawNet
         /// Initializes the surface by copying an existing surface.
         /// </summary>
         public GapiRgbaSurface(GapiRgbaSurface sourceSurface)
-            : this()
         {
             CreateSurface(sourceSurface);
         }
 
         #endregion
 
-        protected override void DestroyGapiObject(IntPtr gapiObject)
+        protected override IntPtr CreateHandle()
         {
-            CheckResult(GdApi.CGapiRGBASurface_Destroy(Handle));
+            return GdApi.CGapiRGBASurface_Create(GapiDraw.GlobalHandle);
+        }
+
+        protected override GapiResult DestroyHandle()
+        {
+            return GdApi.CGapiRGBASurface_Destroy(Handle);
         }
 
         #region CreateSurface

@@ -2,6 +2,9 @@
 
 namespace GapiDrawNet
 {
+    /// <summary>
+    /// Manages the GapiDraw Global Handle, which ties all GapiDraw objects together in an application.
+    /// </summary>
     public static class GapiDraw
     {
         public static readonly IntPtr GlobalHandle;
