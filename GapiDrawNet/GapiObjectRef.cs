@@ -11,21 +11,24 @@ namespace GapiDrawNet
         public IntPtr Handle { get; private set; }
         public bool OwnsHandle { get; private set; }
 
-        protected GapiObjectRef(IntPtr handle)
-            : this(handle, true) { }
-
-        protected internal GapiObjectRef(IntPtr handle, bool ownsHandle)
+        protected GapiObjectRef()
         {
-            if (handle == IntPtr.Zero)
-                throw new InvalidOperationException("Cannot create a GapiObjectBase against a NULL handle.");
+            this.Handle = CreateHandle();
+            this.OwnsHandle = true;
 
-            this.Handle = handle;
-            this.OwnsHandle = ownsHandle;
 #if LEAKS
             // This is the only way to get a stack trace in windows mobile
             try { throw new Exception(); }
             catch (Exception e) { stackTrace = e.StackTrace; }
 #endif
+        }
+
+        protected GapiObjectRef(IntPtr existingHandle)
+        {
+            if (existingHandle == IntPtr.Zero)
+                throw new InvalidOperationException("Cannot create a GapiObjectRef against a NULL handle.");
+
+            this.Handle = existingHandle;
         }
 
 #if LEAKS
@@ -47,23 +50,31 @@ namespace GapiDrawNet
 #endif
         }
 
+        protected abstract IntPtr CreateHandle();
+        protected abstract GapiResult DestroyHandle();
+
         public virtual void Dispose()
         {
             if (OwnsHandle)
             {
-                DestroyGapiObject(Handle);
+                CheckResult(DestroyHandle());
                 OwnsHandle = false;
                 Handle = IntPtr.Zero;
             }
         }
 
-        protected uint CheckResult(uint result)
+        protected GapiResult CheckResult(GapiResult result)
         {
-            GapiErrorHelper.RaiseExceptionOnError(result);
-            return result;
+            return CheckResult(result, null);
         }
 
-        protected abstract void DestroyGapiObject(IntPtr handle);
+        protected GapiResult CheckResult(GapiResult result, string relatedFile)
+        {
+            if (result != GapiResult.Ok)
+                throw new GapiException(result, relatedFile);
+
+            return result; // for chaining
+        }
 
         /// <summary>
         /// Encodes a string for passing to the GapiDraw.dll library via DllImport. Normally
@@ -72,7 +83,7 @@ namespace GapiDrawNet
         /// </summary>
         protected byte[] Str(string s)
         {
-            return Encoding.Unicode.GetBytes(s + '\0');
+            return s != null ? Encoding.Unicode.GetBytes(s + '\0') : null;
         }
     }
 }

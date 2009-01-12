@@ -1,85 +1,67 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace GapiDrawNet
 {
 	/// <summary>
-	/// Summary description for GapiCursor.
+    /// GapiCursor is used to draw a cursor when an application is run in 
+    /// full screen mode on a Stationary computer.
 	/// </summary>
 	public class GapiCursor : GapiSurface
 	{
-		public GapiCursor()
-            : base(GdApi.CGapiCursor_Create(), true)
-		{
-		}
+        /// <summary>
+        /// Creates an empty GapiCursor. You should call CreateSurface followed by CreateCursor
+        /// to initialize the cursor.
+        /// </summary>
+		public GapiCursor() { }
 
-        protected override void DestroyGapiObject(IntPtr gapiObject)
+        protected override IntPtr CreateHandle()
         {
-            CheckResult(GdApi.CGapiCursor_Destroy(Handle));
+            return GdApi.CGapiCursor_Create();
         }
 
+        protected override GapiResult DestroyHandle()
+        {
+            return GdApi.CGapiCursor_Destroy(Handle);
+        }
 
-//		Create a CGapiCursor object. 
-//		Call CGapiCursor::CreateSurface and supply a valid cursor bitmap. 
-//		Call CGapiCursor::SetColorKey if the cursor is not alpha blended. 
-//		Call CGapiCursor::CreateCursor to set the number of frames and update interval. 
-//		On each mouse move, call CGapiCursor::SetPosition. 
-//		On each frame, call CGapiCursor::DrawCursor. 
-
-//		[DllImport("GdNet.DLL")]
-//		public static extern UInt32 CGapiCursor_CreateCursor(IntPtr pCursor, int dwFlags, int dwFrameCount, int dwFrameStep);
-		public UInt32 CreateCursor(int FrameCount, int dwFrameStep)
+        /// <summary>
+        /// Creates the cursor.
+        /// </summary>
+		public void CreateCursor(int frameCount, int frameStep)
 		{
-			UInt32 hResult = GdApi.CGapiCursor_CreateCursor(Handle, 0, FrameCount, dwFrameStep);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
+            CheckResult(GdApi.CGapiCursor_CreateCursor(Handle, 0, (uint)frameCount, (uint)frameStep));
 		}
+
+        // Everything below is from the older Intuitex package, needs to be cleaned up to match above
+
+
 
 //		[DllImport("GdNet.DLL")]
 //		public static extern UInt32 CGapiCursor_SetHotSpot(IntPtr pCursor, int dwX, int dwY);
-		public UInt32 SetHotSpot(int dwX, int dwY)
+		public void SetHotSpot(int dwX, int dwY)
 		{
-			UInt32 hResult = GdApi.CGapiCursor_SetHotSpot(Handle, dwX, dwY);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
+            CheckResult(GdApi.CGapiCursor_SetHotSpot(Handle, dwX, dwY));
 		}
 
 //		[DllImport("GdNet.DLL")]
 //		public static extern UInt32 CGapiCursor_SetFrameIndex(IntPtr pCursor, int dwFrameIndex);
-		public UInt32 SetFrameIndex(int dwFrameIndex)
+		public void SetFrameIndex(int dwFrameIndex)
 		{
-			UInt32 hResult = GdApi.CGapiCursor_SetFrameIndex(Handle, dwFrameIndex);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
+            CheckResult(GdApi.CGapiCursor_SetFrameIndex(Handle, dwFrameIndex));
 		}
 
 //		[DllImport("GdNet.DLL")]
 //		public static extern UInt32 CGapiCursor_SetPosition(IntPtr pCursor, int dwX, int dwY);
-		public UInt32 SetPosition(int dwX, int dwY)
+		public void SetPosition(int dwX, int dwY)
 		{
-			UInt32 hResult = GdApi.CGapiCursor_SetPosition(Handle, dwX, dwY);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
+            CheckResult(GdApi.CGapiCursor_SetPosition(Handle, dwX, dwY));
 		}
 
 //		[DllImport("GdNet.DLL")]
 //		public static extern UInt32 CGapiCursor_DrawCursor(IntPtr pCursor, IntPtr pDestSurface);
-		public UInt32 DrawCursor(GapiSurface destSurface)
+		public void DrawCursor(GapiSurface destSurface)
 		{
-			UInt32 hResult = GdApi.CGapiCursor_DrawCursor(Handle, destSurface.Handle);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
+            CheckResult(GdApi.CGapiCursor_DrawCursor(Handle, destSurface.Handle));
 		}
-
 	}
 }

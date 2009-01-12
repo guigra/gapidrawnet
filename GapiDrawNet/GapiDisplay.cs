@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Drawing;
 
 namespace GapiDrawNet
@@ -10,14 +9,19 @@ namespace GapiDrawNet
 	/// </summary>
 	public class GapiDisplay : GapiSurface
 	{
-        public GapiDisplay()
-            : base(GdApi.CGapiDisplay_Create(GapiDraw.GlobalHandle), true)
-		{
+        /// <summary>
+        /// Creates a new GapiDisplay.
+        /// </summary>
+        public GapiDisplay() { }
+
+        protected override IntPtr CreateHandle()
+        {
+            return GdApi.CGapiDisplay_Create(GapiDraw.GlobalHandle);
         }
 
-        protected override void DestroyGapiObject(IntPtr gapiObject)
+        protected override GapiResult DestroyHandle()
         {
-            CheckResult(GdApi.CGapiDisplay_Destroy(Handle));
+            return GdApi.CGapiDisplay_Destroy(Handle);
         }
 
         public GapiSurface BackBuffer
@@ -25,7 +29,7 @@ namespace GapiDrawNet
             get
             {
                 IntPtr handle = GdApi.CGapiDisplay_GetBackBuffer(Handle);
-                return handle != IntPtr.Zero ? new GapiSurface(handle, false) : null;
+                return handle != IntPtr.Zero ? new GapiSurface(handle) : null;
             }
         }
 
@@ -119,7 +123,7 @@ namespace GapiDrawNet
             get
             {
                 IntPtr systemFont = GdApi.CGapiDisplay_GetSystemFont(Handle);
-                return systemFont != IntPtr.Zero ? new GapiBitmapFont(systemFont, false) : null;
+                return systemFont != IntPtr.Zero ? new GapiBitmapFont(systemFont) : null;
             }
         }
 
@@ -131,72 +135,71 @@ namespace GapiDrawNet
             get
             {
                 IntPtr systemFont = GdApi.CGapiDisplay_GetSystemFontBorder(Handle);
-                return systemFont != IntPtr.Zero ? new GapiBitmapFont(systemFont, false) : null;
+                return systemFont != IntPtr.Zero ? new GapiBitmapFont(systemFont) : null;
             }
+        }
+
+        /// <summary>
+        /// Checks the video hardware to see if any surfaces have been lost in a previous operation.
+        /// </summary>
+        public bool SurfacesLost
+        {
+            get
+            {
+                GapiResult result = GdApi.CGapiDisplay_SurfacesAreLost(Handle);
+
+                switch (result)
+                {
+                    case GapiResult.Ok: return false;
+                    case GapiResult.SurfaceLost: return true;
+                    default: throw new GapiException(result);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Restores all surfaces stored in video memory, in the order they were created.
+        /// </summary>
+        public void RestoreAllVideoSurfaces()
+        {
+            GdApi.CGapiDisplay_RestoreAllVideoSurfaces(Handle);
+        }
+
+        /// <summary>
+        /// Transfers the contents of the back buffer associated with the display surface
+        /// to the display device.
+        /// </summary>
+        public void Flip()
+        {
+            CheckResult(GdApi.CGapiDisplay_Flip(Handle));
         }
 
         // Everything below is from the older Intuitex package, needs to be cleaned up to match above
 
 
 
-
-        //		public static extern UInt32 CGapiDisplay_GetDisplayCaps (IntPtr pDisplay, ref int pCaps);
-//		public DisplayCaps GetDisplayCaps()
-//		{
-//			int caps = -1;
-//			GapiUtility.RaiseExceptionOnError (GdNet.CGapiDisplay_GetDisplayCaps(unmanagedGapiObject, ref caps));
-//			return (DisplayCaps)caps;
-//
-//		}
-
-		public bool SurfacesAreLost()
-		{
-			return ((uint)GapiResult.SurfaceLost) == GdApi.CGapiDisplay_SurfacesAreLost(Handle);
-		}
-
-		public void  RestoreAllVideoSurfaces()
-		{
-			GdApi.CGapiDisplay_RestoreAllVideoSurfaces(Handle);
-		}
-
-		//		public static extern UInt32 CGapiDisplay_Flip (IntPtr pDisplay);
-		public void Flip()
-		{
-			uint hResult = GdApi.CGapiDisplay_Flip(Handle);
-
-			if(hResult == (uint)GapiResult.Ok){ return; }
-			//if(hResult == (uint)GapiResults.GDERR_BACKBUFFERLOST)
-			if(SurfacesAreLost()) 
-			{
-				RestoreAllVideoSurfaces();
-				return;
-			}
-			GapiErrorHelper.RaiseExceptionOnError (hResult);
-		}
-
-
 		//		public static extern UInt32 CGapiDisplay_SuspendDisplay (IntPtr pDisplay);
         public void SuspendDisplay()
         {
-            GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiDisplay_SuspendDisplay(Handle));
+            CheckResult(GdApi.CGapiDisplay_SuspendDisplay(Handle));
         }
 
 		//		public static extern UInt32 CGapiDisplay_ResumeDisplay (IntPtr pDisplay);
         public void ResumeDisplay()
         {
-            GapiErrorHelper.RaiseExceptionOnError(GdApi.CGapiDisplay_ResumeDisplay(Handle));
+            CheckResult(GdApi.CGapiDisplay_ResumeDisplay(Handle));
         }
 
 		//		public static extern UInt32 CGapiDisplay_DeviceToLogicalRect (IntPtr pDisplay, ref GDRect pRect);
 		public void DeviceToLogicalRect(ref GDRect pRect)
 		{
-			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_DeviceToLogicalRect(Handle, ref pRect));
+			CheckResult (GdApi.CGapiDisplay_DeviceToLogicalRect(Handle, ref pRect));
 		}
 
 		//		public static extern UInt32 CGapiDisplay_DeviceToLogicalPoint (IntPtr pDisplay, ref System.Drawing.Point pPoint);
 		public void DeviceToLogicalPoint(ref System.Drawing.Point pPoint)
 		{
-			GapiErrorHelper.RaiseExceptionOnError (GdApi.CGapiDisplay_DeviceToLogicalPoint(Handle, ref pPoint));
+			CheckResult (GdApi.CGapiDisplay_DeviceToLogicalPoint(Handle, ref pPoint));
 		}
 	}
 }

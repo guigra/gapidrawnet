@@ -1,42 +1,40 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace GapiDrawNet
 {
 	/// <summary>
-	/// Summary description for CGapiTimer.
+    /// GapiTimer contains functions to limit the maximum number of frame updates each second 
+    /// for better battery usage. You can also use GapiTimer to retrieve average frame render 
+    /// time and frame rate.
 	/// </summary>
-	public class GapiTimer : IDisposable
+	public class GapiTimer : GapiObjectRef
 	{
-		protected IntPtr unmanagedGapiObject;
-		public IntPtr GapiObject
-		{
-			get { return unmanagedGapiObject; }
-		}
+        protected override IntPtr CreateHandle()
+        {
+            return GdApi.CGapiTimer_Create();
+        }
 
-		public GapiTimer()
-		{
-			unmanagedGapiObject = GdApi.CGapiTimer_Create();
-		}
+        protected override GapiResult DestroyHandle()
+        {
+            return GdApi.CGapiTimer_Destroy(Handle);
+        }
 
-		virtual public void Dispose()
-		{
-			GdApi.CGapiTimer_Destroy(unmanagedGapiObject);
-		}
+        // Everything below is from the older Intuitex package, needs to be cleaned up to match above
+
 
 		public void StartTimer(int TargetFrameRate)
 		{
-			UInt32 hResult = GdApi.CGapiTimer_StartTimer(unmanagedGapiObject, TargetFrameRate);
-			// int hResult = CGapiTimer_StartTimer(unmanagedGapiObject, TargetFrameRate);
+			GapiResult hResult = GdApi.CGapiTimer_StartTimer(Handle, TargetFrameRate);
+			// int hResult = CGapiTimer_StartTimer(Handle, TargetFrameRate);
 		}
 
 		public GapiResult WaitForNextFrame()
 		{
-			GapiResult hResult = (GapiResult)GdApi.CGapiTimer_WaitForNextFrame(unmanagedGapiObject);
+			GapiResult hResult = (GapiResult)GdApi.CGapiTimer_WaitForNextFrame(Handle);
 
 			if(hResult != 0 && hResult != GapiResult.FrameTimeOverflow)
 			{
-				GapiErrorHelper.RaiseExceptionOnError((uint)hResult);
+				CheckResult(hResult);
 			}
 			
 			return (GapiResult)hResult;
@@ -45,7 +43,7 @@ namespace GapiDrawNet
 		public double GetActualFrameRate()
 		{
 			float pActualFrameRate = 0;
-			UInt32 hResult = GdApi.CGapiTimer_GetActualFrameRate(unmanagedGapiObject, ref pActualFrameRate);
+			GapiResult hResult = GdApi.CGapiTimer_GetActualFrameRate(Handle, ref pActualFrameRate);
 
 			return pActualFrameRate;
 		}
@@ -54,7 +52,7 @@ namespace GapiDrawNet
 		{
 			float pActualFrameTime = 0;
 
-			GdApi.CGapiTimer_GetActualFrameTime(unmanagedGapiObject, ref pActualFrameTime);
+			GdApi.CGapiTimer_GetActualFrameTime(Handle, ref pActualFrameTime);
 			return pActualFrameTime;
 		}
 	}

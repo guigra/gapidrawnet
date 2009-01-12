@@ -1,68 +1,51 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace GapiDrawNet
 {
 	/// <summary>
-	/// Summary description for GapiInput.
+    /// GapiInput locks all hardware keys on Windows CE and maps up/down/left/right to the
+    /// correct display orientation.
 	/// </summary>
-	public class GapiInput : IDisposable
+	public class GapiInput : GapiObjectRef
 	{
-//		[DllImport("GdNet.dll")]
-//		private static extern IntPtr CGapiInput_Create();
-//		// private static extern int CGdApplication_Create(ref IntPtr pApp, IntPtr hInst);
-//
-//		[DllImport("GdNet.dll")]
-//		private static extern int  CGapiInput_Destroy(IntPtr pApp);
+        protected override IntPtr CreateHandle()
+        {
+            return GdApi.CGapiInput_Create();
+        }
 
-		virtual public void Dispose()
+        protected override GapiResult DestroyHandle()
+        {
+            return GdApi.CGapiInput_Destroy(Handle);
+        }
+
+        /// <summary>
+        /// Enables a full, exclusive lock of all hardware keys on Windows CE.
+        /// This is automatically done in the constructor.
+        /// </summary>
+        public void OpenInput()
+        {
+            CheckResult(GdApi.CGapiInput_OpenInput(Handle));
+        }
+
+        /// <summary>
+        /// Returns a list of virtual key codes matching the current display orientation.
+        /// </summary>
+		public KeyList KeyList
 		{
-			GdApi.CGapiInput_Destroy(unmanagedGapiObject);
+            get
+            {
+                KeyList keyList;
+                CheckResult(GdApi.CGapiInput_GetKeyList(Handle, out keyList));
+                return keyList;
+            }
 		}
 
-		public GapiInput()
+        /// <summary>
+        /// Releases the exclusive lock on all hardware keys. This is automatically done in Dispose.
+        /// </summary>
+		public void CloseInput()
 		{
-			unmanagedGapiObject = GdApi.CGapiInput_Create();
+            CheckResult(GdApi.CGapiInput_CloseInput(Handle));
 		}
-
-		protected IntPtr unmanagedGapiObject;
-		public IntPtr GapiObject
-		{
-			get { return unmanagedGapiObject; }
-		}
-
-//		[DllImport("GdNet.DLL")]
-//		public static extern UInt32 CGapiInput_GetKeyList(IntPtr pInput, ref GDKEYLIST pKeyList);
-		public UInt32 GetKeyList(ref KeyList pKeyList)
-		{
-			UInt32 hResult = GdApi.CGapiInput_GetKeyList(unmanagedGapiObject, ref pKeyList);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
-		}
-
-//		[DllImport("GdNet.DLL")]
-//		public static extern UInt32 CGapiInput_OpenInput(IntPtr pInput);
-		public UInt32 OpenInput()
-		{
-			UInt32 hResult = GdApi.CGapiInput_OpenInput(unmanagedGapiObject);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
-		}
-
-//		[DllImport("GdNet.DLL")]
-//		public static extern UInt32 CGapiInput_CloseInput(IntPtr pInput);
-		public UInt32 CloseInput()
-		{
-			UInt32 hResult = GdApi.CGapiInput_CloseInput(unmanagedGapiObject);
-
-			GapiErrorHelper.RaiseExceptionOnError(hResult);
-
-			return hResult;
-		}
-
 	}
 }
