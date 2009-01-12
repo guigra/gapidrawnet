@@ -12,6 +12,11 @@ namespace GapiDrawNet
         #region Public Constructors
 
         /// <summary>
+        /// Creates an empty GapiSurface.
+        /// </summary>
+        public GapiRgbaSurface() { }
+
+        /// <summary>
         /// Initializes the surface with the given size and prepares it for graphic operations.
         /// </summary>
         public GapiRgbaSurface(int width, int height)
