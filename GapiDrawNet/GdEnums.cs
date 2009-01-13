@@ -329,7 +329,7 @@ namespace GapiDrawNet
         public uint Left;
         /// <summary>Key code for right</summary>
         public uint Right;
-        /// <summary>Hardware key <Start> ('<Enter>' on stationary PCs)</summary>
+        /// <summary>Hardware key 'Start' ('Enter' on stationary PCs)</summary>
         public uint Start;
         /// <summary>Hardware key #1</summary>
         public uint A;

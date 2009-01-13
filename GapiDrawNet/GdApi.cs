@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GapiDrawNet
 {
-	class GdApi
+	static class GdApi
     {
         const string GapiDraw = "GapiDraw.dll";
 

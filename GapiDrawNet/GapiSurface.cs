@@ -268,31 +268,34 @@ namespace GapiDrawNet
         /// <summary>
         /// Blits the entire area of the given surface on the specified area of this surface.
         /// </summary>
-        public unsafe void Blt(GDRect destRect, GapiSurface surface)
+        public unsafe void Blt(Rectangle destRect, GapiSurface surface)
         {
+            GDRect gdRect = destRect;
             CheckResult(GdApi.CGapiSurface_Blt(
-                Handle, &destRect, surface.Handle, null, 0, null));
+                Handle, &gdRect, surface.Handle, null, 0, null));
         }
 
         /// <summary>
         /// Blits the given area of the given surface on the specified area of this surface.
         /// </summary>
-        public unsafe void Blt(GDRect destRect, GapiSurface surface, GDRect surfaceRect)
+        public unsafe void Blt(Rectangle destRect, GapiSurface surface, Rectangle surfaceRect)
         {
+            GDRect gdDest = destRect, gdSurface = surfaceRect;
             CheckResult(GdApi.CGapiSurface_Blt(
-                Handle, &destRect, surface.Handle, &surfaceRect, 0, null));
+                Handle, &gdDest, surface.Handle, &gdSurface, 0, null));
         }
 
         /// <summary>
         /// Blit the given area of the given surface onto the specified area of this surface with
         /// options and effects.
         /// </summary>
-        public unsafe void Blt(GDRect destRect, GapiSurface surface, GDRect surfaceRect,
+        public unsafe void Blt(Rectangle destRect, GapiSurface surface, Rectangle surfaceRect,
             BltOptions options, ref BltFX fx)
         {
+            GDRect gdDest = destRect, gdSurface = surfaceRect;
             fixed (BltFX* pFX = &fx)
                 CheckResult(GdApi.CGapiSurface_Blt(
-                    Handle, &destRect, surface.Handle, &surfaceRect, options, pFX));
+                    Handle, &gdDest, surface.Handle, &gdSurface, options, pFX));
         }
 
         #endregion
@@ -311,22 +314,24 @@ namespace GapiDrawNet
         /// <summary>
         /// Blits the given area of the specified surface onto this surface at the specified coordinates.
         /// </summary>
-        public unsafe void BltFast(int x, int y, GapiSurface surface, GDRect surfaceRect)
+        public unsafe void BltFast(int x, int y, GapiSurface surface, Rectangle surfaceRect)
         {
+            GDRect gdRect = surfaceRect;
             CheckResult(GdApi.CGapiSurface_BltFast(
-                Handle, x, y, surface.Handle, &surfaceRect, 0, null));
+                Handle, x, y, surface.Handle, &gdRect, 0, null));
         }
 
         /// <summary>
         /// Blits the given area of the specified surface onto this surface at the specified coordinates
         /// with options and effects.
         /// </summary>
-        public unsafe void BltFast(int x, int y, GapiSurface surface, GDRect surfaceRect,
+        public unsafe void BltFast(int x, int y, GapiSurface surface, Rectangle surfaceRect,
             BltFastOptions options, ref BltFastFX fx)
         {
+            GDRect gdRect = surfaceRect;
             fixed (BltFastFX* pFX = &fx)
                 CheckResult(GdApi.CGapiSurface_BltFast(
-                    Handle, x, y, surface.Handle, &surfaceRect, options, pFX));
+                    Handle, x, y, surface.Handle, &gdRect, options, pFX));
         }
 
         #endregion
@@ -346,27 +351,30 @@ namespace GapiDrawNet
         /// <summary>
         /// Blits a surface with an alpha surface component onto this surface at the given coordinates.
         /// </summary>
-        public unsafe void AlphaBltFast(int x, int y, GapiSurface surface, GDRect surfaceRect,
-            GapiSurface alphaSurface, GDRect alphaRect)
+        public unsafe void AlphaBltFast(int x, int y, GapiSurface surface, Rectangle surfaceRect,
+            GapiSurface alphaSurface, Rectangle alphaRect)
         {
+            GDRect gdAlpha = alphaRect, gdSurface = surfaceRect;
             CheckResult(GdApi.CGapiSurface_AlphaBltFast(
-                Handle, x, y, surface.Handle, &surfaceRect,
-                alphaSurface.Handle, &alphaRect, 0, null));
+                Handle, x, y, surface.Handle, &gdSurface,
+                alphaSurface.Handle, &gdAlpha, 0, null));
         }
 
         /// <summary>
         /// Blits a surface with an alpha surface component onto this surface at the given coordinates
         /// and opacity.
         /// </summary>
-        public unsafe void AlphaBltFast(int x, int y, GapiSurface surface, GDRect surfaceRect,
-            GapiSurface alphaSurface, GDRect alphaRect, int opacity)
+        public unsafe void AlphaBltFast(int x, int y, GapiSurface surface, Rectangle surfaceRect,
+            GapiSurface alphaSurface, Rectangle alphaRect, int opacity)
         {
+            GDRect gdAlpha = alphaRect, gdSurface = surfaceRect;
+
             AlphaBltFastFX fx;
             fx.Opacity = (uint)opacity;
 
             CheckResult(GdApi.CGapiSurface_AlphaBltFast(
-                Handle, x, y, surface.Handle, &surfaceRect,
-                alphaSurface.Handle, &alphaRect,
+                Handle, x, y, surface.Handle, &gdSurface,
+                alphaSurface.Handle, &gdAlpha,
                 AlphaBltFastOptions.Opacity, &fx));
         }
 
@@ -382,10 +390,11 @@ namespace GapiDrawNet
         /// <summary>
         /// Blits the given GapiRgbaSurface region onto this surface at the given coordinates.
         /// </summary>
-        public unsafe void AlphaBltFast(int x, int y, GapiRgbaSurface surface, GDRect surfaceRect)
+        public unsafe void AlphaBltFast(int x, int y, GapiRgbaSurface surface, Rectangle surfaceRect)
         {
+            GDRect rect = surfaceRect;
             CheckResult(GdApi.CGapiSurface_AlphaBltFastRgba(
-                Handle, x, y, surface.Handle, &surfaceRect, 0, null));
+                Handle, x, y, surface.Handle, &rect, 0, null));
         }
 
         /// <summary>
@@ -393,14 +402,15 @@ namespace GapiDrawNet
         /// opacity.
         /// </summary>
         /// <param name="opacity">Uses the opacity value in pGDABltFastFx->dwOpacity to adjust the overall weight of the alpha blend. Allowed range is from 0 (transparent) to 255 (opaque). If the opacity is set to 128, an optimized blending mode will be used.</param>
-        public unsafe void AlphaBltFast(int x, int y, GapiRgbaSurface surface, GDRect surfaceRect,
+        public unsafe void AlphaBltFast(int x, int y, GapiRgbaSurface surface, Rectangle surfaceRect,
             int opacity)
         {
+            GDRect rect = surfaceRect;
             AlphaBltFastFX fx;
             fx.Opacity = (uint)opacity;
 
             CheckResult(GdApi.CGapiSurface_AlphaBltFastRgba(
-                Handle, x, y, surface.Handle, &surfaceRect,
+                Handle, x, y, surface.Handle, &rect,
                 AlphaBltFastOptions.Opacity, &fx));
         }
 
@@ -419,7 +429,6 @@ namespace GapiDrawNet
         /// <summary>
         /// Draws a line on the surface.
         /// </summary>
-        /// <param name="opacity">Uses the opacity value in pGDABltFastFx->dwOpacity to adjust the overall weight of the alpha blend. Allowed range is from 0 (transparent) to 255 (opaque). If the opacity is set to 128, an optimized blending mode will be used.</param>
         public unsafe void DrawLine(int x1, int y1, int x2, int y2, Color color, bool antiAlias)
         {
             LineFX* pFX = null;
@@ -442,12 +451,12 @@ namespace GapiDrawNet
 
         #endregion
 
-        #region FillRect
+        #region Fill
 
         /// <summary>
         /// Fills the entire area of this surface with the given color (which can contain opacity).
         /// </summary>
-        public unsafe void FillRect(Color color)
+        public unsafe void Fill(Color color)
         {
             if (color.A < 255)
             {
@@ -666,7 +675,7 @@ namespace GapiDrawNet
 			int result;
 
 			GdApi.CGapiBitmapFont_GetStringWidth (font.Handle, Str(drawString), out result);
-			/// TODO : fix GetTextWidth
+			// TODO : fix GetTextWidth
 			// GapiUtility.RaiseExceptionOnError(GdNet.CGapiSurface_DrawTextBitmapFont(Handle, 0, 0, drawString, font.GapiObject, (int)DrawTextOptions.GDDRAWTEXT_CALCWIDTH, 0, IntPtr.Zero, out result));
 			return result;
 		}
@@ -684,7 +693,7 @@ namespace GapiDrawNet
 		public int DrawText(int dwX, int dwY, string drawString, IntPtr pFont, DrawTextOptions dwFlags)
 		{
 			int result;
-			/// TODO : Overload with missing paramters
+			// TODO : Overload with missing paramters
 			result = (int)GdApi.CGapiSurface_DrawText(Handle, dwX, dwY, Str(drawString), pFont, (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);
 			return result;
 		}
@@ -692,7 +701,7 @@ namespace GapiDrawNet
 		public int DrawText(int dwX, int dwY, string drawString, GapiBitmapFont font, DrawTextOptions dwFlags)
 		{
 			int result;
-			/// TODO : Overload with missing paramters
+			// TODO : Overload with missing paramters
 			result = (int)GdApi.CGapiSurface_DrawText(Handle, dwX, dwY, Str(drawString), font.Handle, (int)dwFlags,IntPtr.Zero, 0, IntPtr.Zero);
 			return result;
 		}

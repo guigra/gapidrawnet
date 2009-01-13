@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace GapiDrawNet
 {
@@ -29,17 +30,24 @@ namespace GapiDrawNet
                 throw new InvalidOperationException("Cannot create a GapiObjectRef against a NULL handle.");
 
             this.Handle = existingHandle;
+            GC.SuppressFinalize(this); // we don't need any cleanup
         }
 
 #if LEAKS
         string stackTrace;
 
-        ~GapiObjectBase()
+        ~GapiObjectRef()
         {
             if (OwnsHandle)
             {
                 throw new Exception("Forgot to call dispose. Allocation stack trace was: " + stackTrace);
             }
+        }
+#else
+        // Only called if OwnsHandle=true and Dispose() hasn't been called
+        ~GapiObjectRef()
+        {
+            CheckResult(DestroyHandle());
         }
 #endif
 
@@ -53,14 +61,16 @@ namespace GapiDrawNet
         protected abstract IntPtr CreateHandle();
         protected abstract GapiResult DestroyHandle();
 
-        public virtual void Dispose()
+        public void Dispose()
         {
             if (OwnsHandle)
             {
                 CheckResult(DestroyHandle());
                 OwnsHandle = false;
                 Handle = IntPtr.Zero;
+                GC.SuppressFinalize(this);
             }
+            else throw new InvalidOperationException("Cannot dispose this GapiDraw object because it does not own the underlying unmanaged GapiDraw object!");
         }
 
         protected GapiResult CheckResult(GapiResult result)
@@ -71,7 +81,12 @@ namespace GapiDrawNet
         protected GapiResult CheckResult(GapiResult result, string relatedFile)
         {
             if (result != GapiResult.Ok)
-                throw new GapiException(result, relatedFile);
+            {
+                if (Enum.IsDefined(typeof(GapiResult), result))
+                    throw new GapiException(result, relatedFile);
+                else
+                    throw Marshal.GetExceptionForHR((int)result);
+            }
 
             return result; // for chaining
         }
