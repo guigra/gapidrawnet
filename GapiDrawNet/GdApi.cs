@@ -70,7 +70,12 @@ namespace GapiDrawNet
         // HW Operations
 
         [DllImport(GapiDraw)]
-        public static extern GapiResult CGapiDisplay_GetMonitorFrequency(IntPtr pDisplay, out uint pFrequency);
+        public static extern GapiResult CGapiDisplay_GetMonitorFrequency(IntPtr pDisplay,
+            out uint pFrequency);
+
+		[DllImport(GapiDraw)]
+		public static extern GapiResult CGapiDisplay_GetAvailableVidMem(IntPtr pDisplay,
+            CreateSurfaceOptions dwFlags, out int pTotal, out int pFree);
 
         #endregion
 
@@ -204,8 +209,6 @@ namespace GapiDrawNet
 //		[DllImport(GapiDraw)]
 //		public static extern GapiResult CGapiDisplay_GetMonitorFrequency(IntPtr pDisplay, ref int pFrequency);
 //
-//		[DllImport(GapiDraw)]
-//		public static extern GapiResult CGapiDisplay_GetAvailableVidMem(IntPtr pDisplay, int dwFlags, ref int pTotal, ref int pFree);
 //
 //		[DllImport(GapiDraw)]
 //		public static extern GapiResult CGapiDisplay_GetHWStatus(IntPtr pDisplay, ref int pStatus);
