@@ -174,6 +174,14 @@ namespace GapiDrawNet
             CheckResult(GdApi.CGapiDisplay_Flip(Handle));
         }
 
+        /// <summary>
+        /// Gets the amount of video memory available.
+        /// </summary>
+        public void GetAvailableVidMem(CreateSurfaceOptions memoryType, out int free, out int total)
+        {
+            CheckResult(GdApi.CGapiDisplay_GetAvailableVidMem(Handle, memoryType, out free, out total));
+        }
+
         // Everything below is from the older Intuitex package, needs to be cleaned up to match above
 
 
