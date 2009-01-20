@@ -9,6 +9,8 @@ namespace GapiDrawNet
     /// </summary>
     public abstract class GapiObjectRef : IDisposable
     {
+        public static Func<string> GetStackTraceOverride;
+
         public IntPtr Handle { get; private set; }
         public bool OwnsHandle { get; private set; }
 
@@ -18,9 +20,12 @@ namespace GapiDrawNet
             this.OwnsHandle = true;
 
 #if LEAKS
-            // This is the only way to get a stack trace in windows mobile
-            try { throw new Exception(); }
-            catch (Exception e) { stackTrace = e.StackTrace; }
+            if (GetStackTraceOverride != null)
+                stackTrace = GetStackTraceOverride();
+            else
+                // This is the only way to get a stack trace in windows mobile
+                try { throw new Exception(); }
+                catch (Exception e) { stackTrace = e.StackTrace; }
 #endif
         }
 
@@ -38,10 +43,7 @@ namespace GapiDrawNet
 
         ~GapiObjectRef()
         {
-            if (OwnsHandle)
-            {
-                throw new Exception("Forgot to call dispose. Allocation stack trace was: " + stackTrace);
-            }
+            throw new Exception("Forgot to call dispose. Allocation stack trace was: " + stackTrace);
         }
 #else
         // Only called if OwnsHandle=true and Dispose() hasn't been called
