@@ -336,6 +336,37 @@ namespace GapiDrawNet
 
         #endregion
 
+        #region AlphaBlt
+
+        public unsafe void AlphaBlt(Rectangle destRect, GapiSurface srcSurface, Rectangle srcRect,
+            GapiSurface alphaSurface, Rectangle alphaRect, AlphaBltOptions options, ref AlphaBltFX fx)
+        {
+            GDRect pDestRect = destRect, pSrcRect = srcRect, alphRect = alphaRect;
+            fixed (AlphaBltFX* pFX = &fx)
+                CheckResult(GdApi.CGapiSurface_AlphaBlt(
+                    Handle, &pDestRect, srcSurface.Handle, &pSrcRect, alphaSurface.Handle, &alphRect, options, pFX));
+        }
+
+        public void AlphaBlt(ref GDRect pDestRect, GapiSurface srcSurface, GapiSurface alphaSurface, ref GDRect alphaRect)
+        {
+            unsafe
+            {
+                fixed (GDRect* pAlphaRect = &alphaRect)
+                    CheckResult(GdApi.CGapiSurface_AlphaBltNoRect(Handle, ref pDestRect, srcSurface.Handle, null, alphaSurface.Handle, ref alphaRect, 0, null));
+            }
+        }
+        public void AlphaBlt(ref GDRect pDestRect, GapiSurface srcSurface, ref GDRect srcRect, GapiSurface alphaSurface, ref GDRect alphaRect)
+        {
+            unsafe
+            {
+                fixed (GDRect* pSrcRect = &srcRect)
+                fixed (GDRect* pAlphaRect = &alphaRect)
+                    CheckResult(GdApi.CGapiSurface_AlphaBltNoRect(Handle, ref pDestRect, srcSurface.Handle, pSrcRect, alphaSurface.Handle, ref alphaRect, 0, null));
+            }
+        }
+
+        #endregion
+
         #region AlphaBltFast
 
         /// <summary>
@@ -595,28 +626,7 @@ namespace GapiDrawNet
 
 
         //		public UInt32 CGapiSurface_AlphaBlt (IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref GDALPHABLTFX pGDAlphaBltFx);
-		public void AlphaBlt(ref GDRect pDestRect, GapiSurface srcSurface, ref GDRect pSrcRect, GapiSurface alphaSurface, ref GDRect alphaRect, AlphaBltOptions dwFlags, ref AlphaBltFX pGDAlphaBltFx)
-		{
-			CheckResult(GdApi.CGapiSurface_AlphaBlt(Handle, ref pDestRect, srcSurface.Handle, ref pSrcRect, alphaSurface.Handle, ref alphaRect, (int)dwFlags, ref pGDAlphaBltFx));
-		}
 		
-		public void AlphaBlt(ref GDRect pDestRect, GapiSurface srcSurface, GapiSurface alphaSurface, ref GDRect alphaRect)
-		{
-			unsafe
-			{
-				fixed (GDRect* pAlphaRect = &alphaRect)
-					CheckResult(GdApi.CGapiSurface_AlphaBltNoRect(Handle, ref pDestRect, srcSurface.Handle, null, alphaSurface.Handle, ref alphaRect, 0, null));
-			}
-		}
-		public void AlphaBlt(ref GDRect pDestRect, GapiSurface srcSurface, ref GDRect srcRect, GapiSurface alphaSurface, ref GDRect alphaRect)
-		{
-			unsafe
-			{
-				fixed (GDRect* pSrcRect = &srcRect)
-					fixed (GDRect* pAlphaRect = &alphaRect)
-						CheckResult(GdApi.CGapiSurface_AlphaBltNoRect(Handle, ref pDestRect, srcSurface.Handle, pSrcRect, alphaSurface.Handle, ref alphaRect, 0, null));
-			}
-		}
 
 //		public UInt32 CGapiSurface_GetPixel (IntPtr pSurface, int dwX, int dwY, ref int pColor);
 		public int GetPixel(int dwX, int dwY)
