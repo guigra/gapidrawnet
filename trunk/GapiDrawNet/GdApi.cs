@@ -130,6 +130,11 @@ namespace GapiDrawNet
             BltFastOptions dwFlags, BltFastFX* pGDBltFastFx);
 
         [DllImport(GapiDraw)]
+        public unsafe static extern GapiResult CGapiSurface_AlphaBlt(IntPtr pSurface, 
+            GDRect* pDestRect, IntPtr pSrcSurface, GDRect* pSrcRect, 
+            IntPtr pAlphaSurface, GDRect* pAlphaRect, AlphaBltOptions dwFlags, AlphaBltFX* pGDAlphaBltFx);
+
+        [DllImport(GapiDraw)]
         public unsafe static extern GapiResult CGapiSurface_AlphaBltFast(IntPtr pSurface,
             int destX, int destY, IntPtr pSrcSurface, GDRect* pSrcRect,
             IntPtr pAlphaSurface, GDRect* pAlphaRect,
@@ -277,8 +282,8 @@ namespace GapiDrawNet
 
 
 //		public static extern GapiResult CGapiSurface_AlphaBlt(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref GDALPHABLTFX pGDAlphaBltFx);
-		[DllImport(GapiDraw)]
-		public static extern GapiResult CGapiSurface_AlphaBlt(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref AlphaBltFX pGDAlphaBltFx);
+		//[DllImport(GapiDraw)]
+		//public static extern GapiResult CGapiSurface_AlphaBlt(IntPtr pSurface, ref GDRect pDestRect, IntPtr pSrcSurface, ref GDRect pSrcRect, IntPtr pAlphaSurface, ref GDRect pAlphaRect, int dwFlags, ref AlphaBltFX pGDAlphaBltFx);
 
 //		[DllImport("GdNet104.DLL", EntryPoint = "CGapiSurface_AlphaBlt")]
 		[DllImport(GapiDraw, EntryPoint = "CGapiSurface_AlphaBlt")]
