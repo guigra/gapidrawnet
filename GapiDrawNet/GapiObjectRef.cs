@@ -10,12 +10,18 @@ namespace GapiDrawNet
     public abstract class GapiObjectRef : IDisposable
     {
         public static Func<string> GetStackTraceOverride;
+        static string extraLeaksData;
 
         public IntPtr Handle { get; private set; }
         public bool OwnsHandle { get; private set; }
 
         protected GapiObjectRef()
         {
+#if LEAKS
+            string extraData = extraLeaksData;
+            extraLeaksData = null;
+#endif
+
             this.Handle = CreateHandle();
             this.OwnsHandle = true;
 
@@ -26,7 +32,15 @@ namespace GapiDrawNet
                 // This is the only way to get a stack trace in windows mobile
                 try { throw new Exception(); }
                 catch (Exception e) { stackTrace = e.StackTrace; }
+
+            if (extraData != null)
+                stackTrace = extraData + "\n" + stackTrace;
 #endif
+        }
+
+        public static void SetExtraLeaksData(string data)
+        {
+            extraLeaksData = data;
         }
 
         protected GapiObjectRef(IntPtr existingHandle)
