@@ -25,7 +25,7 @@ namespace GapiDrawNet
 
         protected override IntPtr CreateHandle()
         {
-            return GdApi.CGapiBitmapFont_Create();
+            return GdApi.CGapiBitmapFont_Create(GapiDraw.GlobalHandle);
         }
 
         protected override GapiResult DestroyHandle()

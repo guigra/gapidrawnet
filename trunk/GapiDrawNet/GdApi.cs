@@ -392,7 +392,7 @@ namespace GapiDrawNet
 
 
 		[DllImport(GapiDraw)]
-		public static extern IntPtr CGapiBitmapFont_Create();
+        public static extern IntPtr CGapiBitmapFont_Create(IntPtr pGapiDraw);
 
 		[DllImport(GapiDraw)]
 		public static extern GapiResult CGapiBitmapFont_Destroy(IntPtr pBitmapFont);
