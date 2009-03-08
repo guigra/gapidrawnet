@@ -75,6 +75,7 @@
     <Compile Include="GapiCursor.cs" />
     <Compile Include="GapiDisplay.cs" />
     <Compile Include="GapiDraw.cs" />
+    <Compile Include="GapiGradient.cs" />
     <Compile Include="GapiRgbaSurface.cs">
       <SubType>Code</SubType>
     </Compile>

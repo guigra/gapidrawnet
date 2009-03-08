@@ -155,6 +155,11 @@ namespace GapiDrawNet
             GDRect* pRect, uint dwColor,
             FillRectOptions dwFlags, FillRectFX* pGDFillRectFx);
 
+        [DllImport(GapiDraw)]
+        public unsafe static extern GapiResult CGapiSurface_GradientRect(IntPtr pSurface,
+            GDRect* pRect, IntPtr pGradient,
+            GradientRectOptions dwFlags, GradientRectFX* pGDGradientRectFx);
+
         #endregion
 
         #region GapiRgbaSurface
@@ -203,6 +208,29 @@ namespace GapiDrawNet
 
         [DllImport(GapiDraw)]
         public static extern GapiResult CGapiRGBASurface_ReleaseBuffer();
+
+        #endregion
+
+        #region GapiGradient
+
+        [DllImport(GapiDraw)]
+        public static extern GapiResult CGapiGradient_CreateGradient(IntPtr pGradient, 
+            int dwNumPixels, uint cFirst, uint cLast);
+
+        [DllImport(GapiDraw)]
+        public static extern uint CGapiGradient_GetNumPixels(IntPtr pGradient);
+
+        [DllImport(GapiDraw)]
+        public static extern GapiResult CGapiGradient_GetFirstColor(IntPtr pGradient, out uint pFirst);
+
+        [DllImport(GapiDraw)]
+        public static extern GapiResult CGapiGradient_GetLastColor(IntPtr pGradient, out uint pLast);
+
+        [DllImport(GapiDraw)]
+        public static extern IntPtr CGapiGradient_Create(IntPtr pGapiDraw);
+
+        [DllImport(GapiDraw)]
+        public static extern GapiResult CGapiGradient_Destroy(IntPtr pGradient);
 
         #endregion
 

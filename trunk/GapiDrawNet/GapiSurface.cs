@@ -520,6 +520,54 @@ namespace GapiDrawNet
 
         #endregion
 
+        #region Gradient
+
+        /// <summary>
+        /// Draws a filled gradient on the entire surface with the given options. The gradient must
+        /// line up exactly with the bounds of this surface (see GapiDraw documentation).
+        /// </summary>
+        public unsafe void Gradient(GapiGradient gradient, GradientRectOptions options)
+        {
+            CheckResult(GdApi.CGapiSurface_GradientRect(
+                Handle, null, gradient.Handle, options, null));
+        }
+
+        /// <summary>
+        /// Draws a filled gradient rectangle on the surface with the given options. The gradient must
+        /// line up exactly with the bounds of the rect (see GapiDraw documentation).
+        /// </summary>
+        public unsafe void GradientRect(Rectangle rect, GapiGradient gradient,
+            GradientRectOptions options)
+        {
+            GDRect gdRect = rect;
+
+            CheckResult(GdApi.CGapiSurface_GradientRect(
+                Handle, &gdRect, gradient.Handle, options, null));
+        }
+
+        /// <summary>
+        /// Draws a filled gradient rectangle on the surface with the given options and opacity.
+        /// The gradient must line up exactly with the bounds of the rect (see GapiDraw documentation).
+        /// </summary>
+        public unsafe void GradientRect(Rectangle rect, GapiGradient gradient, 
+            GradientRectOptions options, int opacity)
+        {
+            GDRect gdRect = rect;
+
+            if (opacity < 255)
+            {
+                GradientRectFX fx;
+                fx.Opacity = (uint)opacity;
+                options |= GradientRectOptions.Opacity;
+
+                CheckResult(GdApi.CGapiSurface_GradientRect(
+                    Handle, &gdRect, gradient.Handle, options, &fx));
+            }
+            else GradientRect(rect, gradient, options);
+        }
+
+        #endregion
+
         /// <summary>
         /// Gets or sets the color to treat as transparent in this surface.
         /// </summary>
